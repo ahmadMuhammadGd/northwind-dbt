@@ -70,5 +70,7 @@ cleaned_products AS (
 SELECT
     MD5(product_name) AS product_SK
     , *
+    , 'northwind' AS data_src
+
 FROM 
     cleaned_products

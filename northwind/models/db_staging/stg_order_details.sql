@@ -20,6 +20,8 @@ SELECT
     unit_price::numeric, 
     quantity::int, 
     discount::numeric
+    , 'northwind' AS data_src
+
 FROM
     {{ source('northwind_raw', 'order_details') }}
 WHERE

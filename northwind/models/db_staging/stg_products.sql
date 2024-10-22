@@ -55,10 +55,14 @@ cleaned_products AS (
         discontinued IS NOT NULL
         AND
         unit_price IS NOT NULL
+        AND
+        unit_price > 0
 )
 
 SELECT
     MD5(product_name) AS product_SK
     , *
+    , 'northwind' AS data_src
+
 FROM 
     cleaned_products
