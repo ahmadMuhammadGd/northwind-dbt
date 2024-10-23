@@ -105,7 +105,7 @@ erDiagram
         INT units_in_stock
         INT units_on_order
         INT reorder_level
-        TIMESTAMP record_id
+        TEXT record_id
         TIMESTAMP updated_at
     }
 
