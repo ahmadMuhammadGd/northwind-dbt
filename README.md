@@ -1,4 +1,4 @@
-> **DISCLAIMER:** This project uses [northwind](https://docs.yugabyte.com/preview/sample-data/northwind/) as a source data, which is a publicly avaiable dataset.  
+> **DISCLAIMER:** This project uses [northwind](https://docs.yugabyte.com/preview/sample-data/northwind/) as source data, which is a publicly avaiable dataset.  
 # Project Objectives
 This project aims to craft a modern data warehouse solution that:
 - Tracks orders by product, cateory and location.  
