@@ -1,0 +1,35 @@
+version: 2
+
+models:
+  - name: fact_inventory
+    description: "Fact table for inventory"
+    columns:
+      - name: record_id
+        description: "Surrogate key for SCD handling"
+        tests:
+          - unique
+          - not_null
+      - name: supplier_sk
+        description: "Foreign key to the supplier dimension"
+        tests:
+          - relationships:
+              to: ref('dim_suppliers')
+              field: supplier_sk
+      - name: product_SK
+        description: "Product key"
+      - name: units_in_stock
+        description: "Number of units in stock"
+        tests:
+          - not_null
+          - positive
+      - name: units_on_order
+        description: "Number of units on order"
+        tests:
+          - not_null
+          - positive
+      - name: reorder_level
+        description: "Reorder level"
+        tests:
+          - not_null
+          - positive
+

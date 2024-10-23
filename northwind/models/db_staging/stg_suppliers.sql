@@ -6,7 +6,9 @@
         indexes = 
         [
             {"columns": ['supplier_sk'], 'unique': True},
-        ]
+        ],
+        group="suppliers"
+
     ) 
 }}
 

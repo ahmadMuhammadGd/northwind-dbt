@@ -1,0 +1,12 @@
+groups:
+  - name: orders
+    owner:
+      name: ahmad
+
+  - name: inventory
+    owner:
+      name: ahmad
+
+  - name: suppliers
+    owner:
+      name: ahmad

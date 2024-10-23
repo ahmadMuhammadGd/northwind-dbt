@@ -31,17 +31,33 @@ clean-targets:         # directories to be removed by `dbt clean`
 # files using the `{{ config(...) }}` macro.
 models:
   northwind:
-    # Config indicated by + and applies to all files under models/example/
+    
     db_staging:
       +docs:
         node_color: "green"
+      +tags: "staging"
+
     marts:
       dimensions:
         +docs:
           node_color: "brown"
+        +tags: "dimensions"
+    
       inventory:
         +docs:
           node_color: "blue"
+        +group: inventory
+        +tags: "inventory"
+    
       orders:
         +docs:
           node_color: "black"
+        +group: orders
+        +tags: "orders"
+
+tests:
+  +store_failures: true
+  +schema: _sad_test_failures
+  northwind:
+    db_staging:
+      +severity: warn

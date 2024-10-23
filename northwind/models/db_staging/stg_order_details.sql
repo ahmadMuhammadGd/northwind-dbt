@@ -7,7 +7,8 @@
         [
             {"columns": ['order_id'], 'unique': False}, 
             {"columns": ['product_id'], 'unique': False},
-        ]
+        ],
+        group="orders"
     ) 
 }}
 

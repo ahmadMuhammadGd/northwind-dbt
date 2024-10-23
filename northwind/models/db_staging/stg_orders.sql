@@ -8,7 +8,8 @@
             {"columns": ['order_id'], 'unique': False},
             {"columns": ['customer_id'], 'unique': False},
             {"columns": ['employee_id'], 'unique': False},
-        ]
+        ],
+        group="orders"
     )
 }}
 

@@ -49,7 +49,6 @@ fact_table AS (
     SELECT
         MD5(o.order_id||od.product_sk||o.data_src) AS transaction_id
         ,o.order_id
-        ,o.data_src
         ,o.order_date
         ,o.required_date
         ,o.shipped_date

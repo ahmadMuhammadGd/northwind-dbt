@@ -1,0 +1,281 @@
+version: 2
+
+models:
+
+  ###############################
+  # CATEGORIES STAGING TABLE
+  ###############################
+
+  - name: stg_categories
+    description: "Categories data from Northwind dataset"
+    columns:
+      - name: category_id
+        description: "Primary key for categories"
+        tests:
+          - not_null
+          - unique
+      - name: category_name
+        description: "Name of the category"
+        tests:
+          - not_null
+      - name: description
+        description: "Description of the category"
+        tests:
+          - not_null
+      - name: picture
+        description: "Image data for the category"
+      - name: category_sk
+        description: "Surrogate key for the category"
+        tests:
+          - not_null
+
+
+
+
+
+  ###############################
+  # INVENTORY STAGING TABLE
+  ###############################
+
+  - name: stg_inventory
+    description: "Inventory data from the CDC products inventory"
+    columns:
+      - name: product_id
+        description: "Product ID in the inventory"
+        tests:
+          - not_null
+      - name: product_name
+        description: "Name of the product"
+        tests:
+          - not_null
+      - name: supplier_id
+        description: "ID of the product supplier"
+        tests:
+          - not_null
+      - name: category_id
+        description: "ID of the category to which the product belongs"
+        tests:
+          - not_null
+      - name: quantity_per_unit
+        description: "Quantity of the product per unit"
+        tests:
+          - not_null
+      - name: units_in_stock
+        description: "Units of the product in stock"
+        tests:
+          - not_null
+          - positive
+
+      - name: units_on_order
+        description: "Units of the product currently on order"
+        tests:
+          - not_null
+          - positive
+
+      - name: reorder_level
+        tests:
+          - not_null
+          - positive
+
+      - name: dbt_scd_id
+        description: "Slowly changing dimension ID for the product"
+        tests:
+          - unique
+          - not_null
+        
+      - name: product_SK
+        description: "Surrogate key for the product"
+        tests:
+          - not_null
+          - unique
+
+
+
+
+
+  ###############################
+  # ORDER DETAILS STAGING TABLE
+  ###############################
+
+  - name: stg_order_details
+    description: "Order details from Northwind dataset"
+    columns:
+      - name: order_id
+        description: "ID of the order"
+        tests:
+          - not_null
+      - name: product_id
+        description: "ID of the product ordered"
+        tests:
+          - not_null
+      - name: unit_price
+        description: "Price per unit of the product"
+        tests:
+          - not_null
+          - greater_than_zero
+      - name: quantity
+        description: "Quantity of the product ordered"
+        tests:
+          - not_null
+          - greater_than_zero
+      - name: discount
+        description: "Discount applied to the order"
+        tests:
+          - not_null
+          - percentage
+
+
+
+
+
+  ###############################
+  # ORDERS STAGING TABLE
+  ###############################
+  
+  - name: stg_orders
+    description: "Orders data from Northwind dataset"
+    columns:
+      - name: order_id
+        description: "ID of the order"
+        tests:
+          - not_null
+      - name: customer_id
+        description: "ID of the customer placing the order"
+        tests:
+          - not_null
+      - name: employee_id
+        description: "ID of the employee processing the order"
+        tests:
+          - not_null
+      - name: order_date
+        description: "Date the order was placed"
+        tests:
+          - not_null
+      - name: required_date
+        description: "Date the order is required to be fulfilled"
+        tests:
+          - not_null
+      - name: shipped_date
+        description: "Date the order was shipped"
+        tests:
+          - not_null
+      - name: ship_via
+        description: "Shipping method"
+        tests:
+          - not_null
+      - name: freight
+        description: "Freight charges for the order"
+        tests:
+          - not_null
+          - positive
+      - name: ship_name
+          - not_null
+      - name: ship_address
+        tests:
+          - not_null
+      - name: ship_city
+        tests:
+          - not_null
+      - name: ship_postal_code
+        tests:
+          - not_null
+      - name: ship_country
+        tests:
+          - not_null
+      - name: ship_region
+        tests:
+          - not_null
+
+
+
+
+
+  ###############################
+  # PRODUCTS STAGING TABLE
+  ###############################
+
+  - name: stg_products
+    description: "Products data from Northwind dataset"
+    columns:
+      - name: product_id
+        description: "ID of the product"
+        tests:
+          - not_null
+      - name: product_name
+        description: "Name of the product"
+        tests:
+          - not_null
+          - unique
+      - name: supplier_id
+        description: "ID of the product supplier"
+        tests:
+          - not_null
+      - name: category_id
+        description: "ID of the category to which the product belongs"
+        tests:
+          - not_null
+      - name: unit_price
+        description: "Price of the product"
+        tests:
+          - not_null
+          - greater_than_zero
+      - name: dbt_scd_id
+        description: "Slowly changing dimension ID for the product"
+        tests:
+          - unique
+          - not_null
+      - name: product_SK
+        description: "Surrogate key for the product"
+        tests:
+          - not_null
+          - unique
+      - name: discontinued
+        tests:
+          - not_null
+          - accepted_values:
+              values: [0,1]
+
+
+
+
+
+
+  ###############################
+  # SUPPLIERS STAGING TABLE
+  ###############################
+  - name: stg_suppliers
+    description: "Suppliers data from Northwind dataset"
+    columns:
+      - name: supplier_id
+        description: "ID of the supplier"
+        tests:
+          - not_null
+      - name: company_name
+        description: "Name of the supplier company"
+        tests:
+          - not_null
+      - name: contact_name
+        description: "Name of the supplier contact person"
+        tests:
+          - not_null
+      - name: contact_title
+        description: "Title of the supplier contact person"
+        tests:
+          - not_null
+      - name: supplier_sk
+        description: "Surrogate key for the supplier"
+        tests:
+          - not_null
+          - unique
+      - name: address
+        tests:
+          - not_null
+      - name: postal_code
+        tests:
+          - not_null
+      - name: country
+        tests:
+          - not_null
+      - name: region
+        tests:
+          - not_null

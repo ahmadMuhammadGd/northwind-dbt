@@ -2,10 +2,10 @@
     config(
         materialized='incremental',
         strategy='append',
-        unique_key='dbt_scd_id',
+        unique_key='record_id',
         indexes = 
         [
-            {"columns": ['dbt_scd_id'], 'unique': True},
+            {"columns": ['record_id'], 'unique': True},
             {"columns": ['supplier_sk'], 'unique': False},
         ]
     ) 
@@ -15,7 +15,6 @@ WITH inventory AS (
     SELECT
         product_SK
         , supplier_id
-        , quantity_per_unit
         , units_in_stock
         , units_on_order
         , reorder_level
@@ -30,7 +29,6 @@ enriched AS (
     SELECT
         i.product_SK
         , s.supplier_sk
-        , i.quantity_per_unit
         , i.units_in_stock
         , i.units_on_order
         , i.reorder_level
@@ -43,6 +41,6 @@ enriched AS (
     ON
         s.supplier_id = i.supplier_id
     AND
-        c.data_src = i.data_src
+        s.data_src = i.data_src
 )
 SELECT * FROM enriched

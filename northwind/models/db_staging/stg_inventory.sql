@@ -8,7 +8,8 @@
             {"columns": ['product_id'], 'unique': False},
             {"columns": ['dbt_scd_id'], 'unique': True},
             {"columns": ['product_SK'], 'unique': False}
-        ]
+        ],
+        group="inventory"
     ) 
 }}
 

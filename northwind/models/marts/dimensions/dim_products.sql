@@ -31,7 +31,7 @@ WITH scd2_products AS (
 ,
 eniched AS (
     SELECT
-        p.product_SK
+          p.product_SK
         , p.product_name
         , c.category_sk
         , p.unit_price
