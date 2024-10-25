@@ -102,12 +102,12 @@ erDiagram
     }
 
     fact_inventory {
-        TEXT product_SK PK
+        TEXT product_SK 
         TEXT supplier_sk
         INT units_in_stock
         INT units_on_order
         INT reorder_level
-        TEXT record_id
+        TEXT record_id PK
         TIMESTAMP updated_at
     }
 
