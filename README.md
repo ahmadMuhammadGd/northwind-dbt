@@ -24,9 +24,11 @@ B -- "store 'source 2' in data_src" --> C
 A -- "store 'source 1' in data_src" --> G
 B -- "store 'source 2' in data_src" --> G
 
+G -- "create surrogate key" --> Gs[MD5]
+
 
 C -- "product_id AND data_src" --> D
-G -- "product_id AND data_src" --> D
+Gs -- "product_id AND data_src" --> D
 
 
 D --"Replace source foreign keys with new pproducts surrogate keys"--> F
