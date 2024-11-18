@@ -6,116 +6,78 @@ This project aims to craft a modern data warehouse solution that:
 - Tracks Inventory data to conduct Safety stock analysis in the future.
 # Business Logic
 - `Cutomer names`, `products name`, `cateories`, `location data` are consistent a cross all sources.
-- It's planned to integrate more ddata sources in the future.
-# Approach
-
-``` mermaid
-flowchart LR;
-A[Source 1]
-B[Source 2]
-C[Staing table orders]
-D[Join operation]
-F[Orders fact]
-G[Staging table products]
-
-A -- "store 'source 1' in data_src" --> C
-B -- "store 'source 2' in data_src" --> C
-
-A -- "store 'source 1' in data_src" --> G
-B -- "store 'source 2' in data_src" --> G
-
-G -- "create surrogate key" --> Gs[MD5]
 
 
-C -- "product_id AND data_src" --> D
-Gs -- "product_id AND data_src" --> D
 
-
-D --"Replace source foreign keys with new pproducts surrogate keys"--> F
-
-```
-
-- Adding addition column in all staing tables called `data_src` to store source's name
-- Assuming that `cutomer name`, `product name`, `cateorie`, `location data` doesn't cause conflicts, it's used as [Surrogate key](https://en.wikipedia.org/wiki/Surrogate_key) to replace **source's foreign keys**. `Surrogate key` can combine one or more **concatenated and catsted as text** columns using [MD5 hashing](https://en.wikipedia.org/wiki/MD5).
-- `Source's foreign key` and `data_src` are used as [composite key](https://en.wikipedia.org/wiki/Composite_key) to replace `source's foreign key` with new `surrogate key`..
-- If possible, the below logic can be used to generate `surrogate keys` instead of joining. 
-## Surrogate keys logic
-| Surrogate key | Logic |
-|---------------|-------|
-| **category_sk** | MD5 Hash of **cleaned** `category_name`|
-| **product_sk**  | MD5 Hash of **cleaned** `product_name`|
-| **supplier_sk** | MD5 Hash of **cleaned** `supplier_sk`|
-
-********
 # Data Lineage
-![DAG](./readme_assets/dbt-dag(3).png)
-# Limitations
-## IO
-`MD5` generates `128-bit digest` which utilises bigger `IO` compare to [`BIGINT`](https://www.postgresql.org/docs/current/datatype-numeric.html) `64-bits` type that has a range of `-9223372036854775808` to `+9223372036854775807` 
+![DAG](./readme_assets/dbt-dag.png)
+
+
 
 # ERD
 ```mermaid
 erDiagram
-    dim_product {
-        TEXT product_SK PK
-        TEXT product_name
-        TEXT category_sk
-        NUMERIC unit_price
-        VARCAR quantity_per_unit
-        BOOL discontinued
-        TEXT dbt_scd_id
-        TIMESTAMP dbt_updated_at
-        TIMESTAMP dbt_valid_from
-        TIMESTAMP dbt_valid_to
-    }
-
-    dim_supplier {
-        TEXT supplier_sk PK
-        TEXT company_name
-        TEXT contact_name
-        TEXT contact_title
-        TEXT location_sk
-        VARCHAR phone
-        VARCHAR fax
-        TEXT homepage
-    }
-
-    dim_location {
-        TEXT location_sk PK
-        VARCHAR address
-        VARCHAR city
-        VARCHAR region
-        VARCHAR postal_code
-        VARCHAR country
-    }
-
+    fact_inventory ||--o{ dim_products: ""
+    fact_inventory ||--o{ dim_suppliers: ""
+    fact_orders ||--o{ dim_location: ""
+    fact_orders ||--o{ dim_products: ""
+    
     fact_orders {
-        TEXT transaction_id PK
-        INT order_id
-        DATE order_date
-        DATE required_date
-        DATE shipped_date
-        TEXT location_sk
-        NUMERIC unit_price
-        INT quantity
-        NUMERIC discount
+        transaction_id	text       PK
+        order_id	    integer     
+        order_date	    date
+        required_date	date
+        shipped_date	date
+        location_sk	    text        FK
+        product_sk	    text        FK
+        unit_price	    numeric
+        quantity	    integer
+        discount	    numeric
     }
 
     fact_inventory {
-        TEXT product_SK 
-        TEXT supplier_sk
-        INT units_in_stock
-        INT units_on_order
-        INT reorder_level
-        TEXT record_id PK
-        TIMESTAMP updated_at
+        product_sk	    text        FK
+        supplier_sk	    text        FK
+        units_in_stock	integer
+        units_on_order	integer
+        reorder_level	integer
+        record_id	    text        PK
+        updated_at	    timestamp
     }
 
-    dim_product ||--o{ fact_orders : ""
-    dim_product ||--o{ fact_inventory : ""
-    dim_supplier ||--o{ dim_product:""
-    dim_location ||--o{ dim_supplier:""
-    dim_location ||--o{ fact_orders:""
+    dim_products {
+        product_sk	        text        PK
+        product_id	        integer     
+        product_name	    text
+        category_name	    charactervarying
+        unit_price	        numeric
+        quantity_per_unit	charactervarying
+        start_date	        date
+        end_date	        date
+        is_active	        boolean
+        valid_days	        integer
+    }
+
+    dim_location {
+        location_sk	    text    PK
+        address	        text
+        city	        text
+        region	        text
+        postal_code	    text
+        country	        text
+    }
+
+
+    dim_suppliers{
+        supplier_sk     text                PK
+        company_name    text                
+        contact_name    text                
+        contact_title   text                
+        location_sk     text                
+        phone       	charactervarying                
+        fax     	    charactervarying                
+        homepage        text                
+    }
 ```
 # dbt Model Structure
 ``` bash

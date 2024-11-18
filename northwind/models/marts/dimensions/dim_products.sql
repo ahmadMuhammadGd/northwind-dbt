@@ -2,52 +2,96 @@
     config(
         materialized='incremental',
         strategy='merge',
-        unique_key='dbt_scd_id',
+        unique_key='product_sk',
         indexes = 
         [
-            {"columns": ['dbt_scd_id'], 'unique': True},
-            {"columns": ['category_sk'], 'unique': False},
+            {"columns": ['product_sk'], 'unique': True},
+            {"columns": ['product_id'], 'unique': False},
         ]
     )
 }}
 
 
-WITH scd2_products AS (
-    SELECT  
-        product_SK
-        , product_name
-        , category_id
-        , unit_price
-        , quantity_per_unit
-        , discontinued
-        , dbt_scd_id
-        , dbt_updated_at
-        , dbt_valid_from
-        , dbt_valid_to
-        , data_src
-    FROM
-        {{ ref('stg_products') }}
+{% set far_date = "'9999-01-01'" %}
+{% set valid_days_currently_active_flag = 99999999 %}
+
+
+WITH expanded_scd AS (
+    SELECT 
+        product_id,
+        unit_price,
+        o.order_date AS start_date,
+        LEAD(o.order_date - 1) OVER (PARTITION BY product_id ORDER BY o.order_date ASC) AS end_date
+    FROM 
+        {{ ref('stg_order_details') }} od
+    LEFT JOIN
+        {{ ref('stg_orders') }} o
+    ON
+        od.order_id = o.order_id
+	WHERE 
+		o.order_date IS NOT NULL
 )
 ,
-eniched AS (
-    SELECT
-          p.product_SK
-        , p.product_name
-        , c.category_sk
-        , p.unit_price
-        , p.quantity_per_unit
-        , p.discontinued
-        , p.dbt_scd_id
-        , p.dbt_updated_at
-        , p.dbt_valid_from
-        , p.dbt_valid_to
-    FROM
-        scd2_products p
-    LEFT JOIN
-        {{ ref('stg_categories') }} c  
-    ON
-        c.category_id = p.category_id
-    AND
-        c.data_src = p.data_src
+shrinked_scd AS (
+	SELECT 
+		product_id,
+	    unit_price,
+		MIN(start_date) AS start_date, 
+		MAX(COALESCE(end_date, {{ far_date }})) as end_date
+	FROM 
+        expanded_scd
+	GROUP BY 
+		product_id, unit_price
 )
-SELECT * FROM eniched
+,
+scd_minimal AS (
+	SELECT 
+		MD5(product_id::text || start_date::text) AS product_sk,
+		product_id,
+		unit_price,
+		start_date, 
+		end_date,
+		CASE 
+            WHEN end_date = {{ far_date }} 
+            THEN 1 
+            ELSE 0 
+        END AS is_active
+	FROM 
+		shrinked_scd
+	ORDER BY 
+        product_id, start_date
+)
+,
+enriched_scd AS (
+	SELECT 
+		scd.product_sk,
+		scd.product_id,
+		p.product_name,
+		c.category_name,
+		scd.unit_price,
+        p.quantity_per_unit,
+		scd.start_date,
+		scd.end_date,
+		scd.is_active::bool,
+		CASE 
+            WHEN scd.is_active = 1 
+            THEN {{ valid_days_currently_active_flag }} 
+            ELSE end_date - start_date 
+        END AS valid_days
+	FROM 
+		scd_minimal scd
+	
+	LEFT JOIN
+		{{ ref('stg_products') }} p
+	ON 
+        p.product_id = scd.product_id
+	
+	LEFT JOIN
+		{{ ref('stg_categories') }} c
+	ON 
+        c.category_id = p.category_id
+)
+SELECT 
+	*
+FROM 
+    enriched_scd

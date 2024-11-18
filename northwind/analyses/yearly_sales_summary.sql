@@ -4,7 +4,10 @@ WITH orders AS (
         unit_price,
         quantity,
         discount,
-        (unit_price * quantity * discount) AS total
+        CASE 
+            WHEN discount = 0 THEN unit_price * quantity
+            ELSE unit_price * quantity * discount
+        END AS total
     FROM
         {{ ref('fact_orders') }}
     WHERE shipped_date IS NOT NULL

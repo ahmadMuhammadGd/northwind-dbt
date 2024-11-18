@@ -16,7 +16,6 @@
 WITH orders AS (
     SELECT
          order_id
-        , data_src
         , order_date
         , required_date
         , shipped_date
@@ -34,20 +33,19 @@ order_details AS (
         , o.unit_price
         , o.quantity
         , o.discount
-        , o.data_src
     FROM 
         {{ ref('stg_order_details') }} o
     LEFT JOIN
-        {{ ref('stg_products') }} p
+        {{ ref('dim_products') }} p
     ON 
         o.product_id=p.product_id
     AND
-        o.data_src=p.data_src
+        o.unit_price = p.unit_price
 )
 ,
 fact_table AS (
     SELECT
-        MD5(o.order_id||od.product_sk||o.data_src) AS transaction_id
+        MD5(o.order_id||od.product_sk) AS transaction_id
         ,o.order_id
         ,o.order_date
         ,o.required_date
@@ -63,8 +61,6 @@ fact_table AS (
         order_details od 
     ON
         o.order_id=od.order_id
-    AND
-        o.data_src=od.data_src
 )
 SELECT
     *

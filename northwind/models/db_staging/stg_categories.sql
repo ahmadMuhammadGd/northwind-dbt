@@ -32,7 +32,6 @@ WHERE
 
 SELECT
     MD5(category_name)::text AS category_sk, *
-    , 'northwind' AS data_src
 FROM 
 
 categories

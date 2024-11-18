@@ -15,8 +15,13 @@ models:
           - relationships:
               to: ref('dim_suppliers')
               field: supplier_sk
-      - name: product_SK
+      - name: product_id
         description: "Product key"
+        tests:
+          - not_null
+          # - relationships:
+          #     to: ref('dim_products')
+          #     field: product_id
       - name: units_in_stock
         description: "Number of units in stock"
         tests:
