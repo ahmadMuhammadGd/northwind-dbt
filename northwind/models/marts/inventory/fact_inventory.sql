@@ -7,27 +7,27 @@
         [
             {"columns": ['record_id'], 'unique': True},
             {"columns": ['supplier_sk'], 'unique': False},
+            {"columns": ['product_id'], 'unique': False},
         ]
     ) 
 }}
 
 WITH inventory AS (
     SELECT
-        product_SK
+        product_id
         , supplier_id
         , units_in_stock
         , units_on_order
         , reorder_level
         , dbt_scd_id
         , dbt_updated_at
-        , data_src
     FROM
         {{ ref('stg_inventory') }}
 )
 ,
 enriched AS (
     SELECT
-        i.product_SK
+        i.product_id
         , s.supplier_sk
         , i.units_in_stock
         , i.units_on_order
@@ -40,7 +40,5 @@ enriched AS (
         {{ ref('stg_suppliers') }} s  
     ON
         s.supplier_id = i.supplier_id
-    AND
-        s.data_src = i.data_src
 )
 SELECT * FROM enriched

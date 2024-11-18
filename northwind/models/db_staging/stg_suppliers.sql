@@ -64,6 +64,5 @@ suppliers AS (
 SELECT
     MD5(company_name) AS supplier_sk
     ,*
-    , 'northwind' AS data_src
 FROM 
     suppliers

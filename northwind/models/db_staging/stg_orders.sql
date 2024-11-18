@@ -31,7 +31,6 @@ SELECT
     ship_region::varchar(15), 
     ship_postal_code::varchar(10), 
     ship_country::varchar(15)
-    , 'northwind' AS data_src
 
 FROM
     {{ source('northwind_raw', 'orders') }}

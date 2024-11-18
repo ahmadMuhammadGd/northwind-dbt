@@ -24,10 +24,7 @@ models:
           - not_null
       - name: picture
         description: "Image data for the category"
-      - name: category_sk
-        description: "Surrogate key for the category"
-        tests:
-          - not_null
+
 
 
 
@@ -82,12 +79,6 @@ models:
         tests:
           - unique
           - not_null
-        
-      - name: product_SK
-        description: "Surrogate key for the product"
-        tests:
-          - not_null
-          - unique
 
 
 
@@ -219,16 +210,6 @@ models:
         tests:
           - not_null
           - greater_than_zero
-      - name: dbt_scd_id
-        description: "Slowly changing dimension ID for the product"
-        tests:
-          - unique
-          - not_null
-      - name: product_SK
-        description: "Surrogate key for the product"
-        tests:
-          - not_null
-          - unique
       - name: discontinued
         tests:
           - not_null

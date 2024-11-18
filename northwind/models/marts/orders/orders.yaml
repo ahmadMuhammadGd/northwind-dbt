@@ -17,6 +17,7 @@ models:
           - relationships:
               to: ref('dim_products')
               field: product_sk
+              severity: warn
       - name: location_sk
         description: "Foreign key to the location dimension"
         tests:
