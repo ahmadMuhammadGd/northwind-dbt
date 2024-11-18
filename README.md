@@ -84,28 +84,10 @@ erDiagram
 > tree ./northwind/models 
 ./northwind/models
 ├── db_staging
-│   ├── db_staging.yaml
-│   ├── stg_categories.sql
-│   ├── stg_inventory.sql
-│   ├── stg_order_details.sql
-│   ├── stg_orders.sql
-│   ├── stg_products.sql
-│   └── stg_suppliers.sql
 ├── groups.yml
 ├── marts
 │   ├── dimensions
-│   │   ├── dim_category.sql
-│   │   ├── dimensions.yml
-│   │   ├── dim_location.sql
-│   │   ├── dim_products.sql
-│   │   └── dim_suppliers.sql
 │   ├── inventory
-│   │   ├── fact_inventory.sql
-│   │   └── inventory.yml
 │   └── orders
-│       ├── fact_orders.sql
-│       └── orders.yaml
 └── source.yml
-
-5 directories, 18 files
 ```
