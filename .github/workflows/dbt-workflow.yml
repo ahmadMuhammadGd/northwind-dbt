@@ -1,0 +1,21 @@
+name: 🔨 Building env dbt models 👾
+
+on: [push]
+
+jobs:
+  Build-test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Branch
+      - uses: actions/checkout@v3
+
+      - name: Setup Python
+      - run: actions/setup-python@4v
+        with:
+          python-version: '3.10'
+      
+      - name: Initialize db engine, and source database
+        run: sh start.sh
+
+      - name: Run dbt
+        run: dbt run --profiles-dir .
