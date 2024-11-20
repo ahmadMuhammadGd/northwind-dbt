@@ -3,19 +3,25 @@ name: 🔨 Building env dbt models 👾
 on: [push]
 
 jobs:
-  Build-test:
+  Test-Development-Initialization:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout Branch
-      - uses: actions/checkout@v3
+      - name: 📥 Checkout Branch
+        uses: actions/checkout@v3
 
-      - name: Setup Python
-      - run: actions/setup-python@4v
+      - name: 🐍 Setup Python
+        uses: actions/setup-python@v4
         with:
           python-version: '3.10'
-      
-      - name: Initialize db engine, and source database
-        run: sh start.sh
 
-      - name: Run dbt
-        run: dbt run --profiles-dir .
+      - name: 📦 Install Python Requirements
+        run: pip install -r requirements.txt
+        
+      - name: 🛠️ Initialize Database and Run dbt
+        run: sh github-actions-psql-init.sh
+
+      - name: 🚀 Run dbt Commands
+        run: |
+          cd ./northwind
+          dbt deps
+          dbt build --profiles-dir ..
