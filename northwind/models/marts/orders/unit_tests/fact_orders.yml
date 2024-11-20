@@ -16,7 +16,7 @@ unit_tests:
           - {product_sk: a}
     expect:
       rows:
-        - {order_id: 1, order_date: 2020-01-01, shipped_date: 2020-01-01, order_status: shipped}
+        - {order_id: 1, order_date: 2020-01-01, shipped_date: 2020-01-01, order_status: 'shipped'}
 
 
   - name: fact_orders_test_shipped_date_is_null

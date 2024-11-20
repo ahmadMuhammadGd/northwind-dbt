@@ -21,17 +21,16 @@ WITH new_inventory AS (
         cdc.dbt_scd_id,
         cdc.dbt_updated_at
     FROM
-        {{ ref('CDC_products_inventory') }} cdc
+        {{ ref('stg_inventory') }} cdc
     
     {% if is_incremental() %}
+    LEFT JOIN
+        {{ this }} t
+    ON
+        t.record_id = cdc.dbt_scd_id
     WHERE
-        NOT EXISTS (
-            SELECT 1 
-            FROM {{ this }} t 
-            WHERE t.record_id = cdc.dbt_scd_id
-        )
+        t.record_id IS NULL
     {% endif %}
-
 ),
 enriched AS (
     SELECT
@@ -45,15 +44,8 @@ enriched AS (
     FROM
         new_inventory i
     LEFT JOIN
-        {{ ref('stg_suppliers') }} s  
+        {{ ref('dim_suppliers') }} s  
     ON
         s.supplier_id = i.supplier_id
 )
-
-{% if is_incremental() %}
 SELECT * FROM enriched
-UNION ALL
-SELECT * FROM {{ this }}
-{% else %}
-SELECT * FROM enriched
-{% endif %}

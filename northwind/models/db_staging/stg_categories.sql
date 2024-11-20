@@ -1,7 +1,7 @@
 {{
     config(
         materialized='incremental',
-        strategy='merge',
+        incremental_strategy='merge',
         unique_key='category_id',
         indexes = 
         [

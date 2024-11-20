@@ -1,7 +1,7 @@
 {{
     config(
         materialized='table',
-        strategy='append',
+        incremental_strategy='append',
         unique_key='order_sk',
         indexes = 
         [

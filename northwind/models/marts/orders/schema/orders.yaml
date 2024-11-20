@@ -15,13 +15,15 @@ models:
 
 
       - name: order_sk
-        description: "Unique ID for the order"
+        description: "Surrogate key for the order"
         data_type: text 
+        constraints:
+          - type: not_null
         tests:
-          - not_null 
+          - not_null
 
       - name: order_id
-        description: "ID of the order"
+        description: "Business ID of the order"
         data_type: int
         constraints:
           - type: not_null

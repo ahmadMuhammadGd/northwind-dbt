@@ -1,7 +1,7 @@
 {{
     config(
         materialized='incremental',
-        strategy='merge',
+        incremental_strategy='merge',
         unique_key='supplier_sk',
         indexes = 
         [
@@ -12,8 +12,9 @@
 
 WITH suppliers AS (
     SELECT
-        DISTINCT
-        supplier_sk
+        DISTINCT ON (supplier_id)
+        MD5(company_name || contact_title) AS supplier_sk
+        , supplier_id
         , company_name
         , contact_name
         , contact_title

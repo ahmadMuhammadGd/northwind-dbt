@@ -1,11 +1,11 @@
 {{
     config(
         materialized='incremental',
-        strategy='append',
-        unique_key='supplier_sk',
+        incremental_strategy='merge',
+        unique_key='supplier_id',
         indexes = 
         [
-            {"columns": ['supplier_sk'], 'unique': True},
+            {"columns": ['supplier_id'], 'unique': True},
         ],
         group="suppliers"
 
@@ -50,7 +50,6 @@ suppliers AS (
 )
 
 SELECT
-    MD5(company_name) AS supplier_sk
-    ,*
+    s.*
 FROM 
-    suppliers
+    suppliers s

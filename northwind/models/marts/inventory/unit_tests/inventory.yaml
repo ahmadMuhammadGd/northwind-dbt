@@ -6,13 +6,13 @@ unit_tests:
       macros:
         is_incremental: false 
     given:
-      - input: ref('CDC_products_inventory')
+      - input: ref('stg_inventory')
         rows:
         - {dbt_scd_id: a, units_in_stock: 10, units_on_order: 20, reorder_level: 20, dbt_updated_at: 2020-01-01 00:00:00}
       
-      - input: ref('stg_suppliers')
+      - input: ref('dim_suppliers')
         rows:
-        - {supplier_sk: 1}
+        - {supplier_id: 1}
     
     expect:
       rows:
@@ -25,19 +25,19 @@ unit_tests:
       macros:
         is_incremental: true
     given:
-      - input: ref('CDC_products_inventory')
+      - input: ref('stg_inventory')
         rows:
           - {dbt_scd_id: b, units_in_stock: 50, units_on_order: 10, reorder_level: 20, dbt_updated_at: 2020-01-02 00:00:00}
       
-      - input: ref('stg_suppliers')
+      - input: ref('dim_suppliers')
         rows:
-          - {supplier_sk: 1}
+          - {supplier_id: 1}
       
       - input: this
         rows:
           - {record_id: a, units_in_stock: 10, units_on_order: 20, reorder_level: 20, updated_at: 2020-01-01 00:00:00}
     
     expect:
+      # what will be inserted/merged into my_incremental_model
       rows:
-        - {record_id: a, units_in_stock: 10, units_on_order: 20, reorder_level: 20, updated_at: 2020-01-01 00:00:00}
         - {record_id: b, units_in_stock: 50, units_on_order: 10, reorder_level: 20, updated_at: 2020-01-02 00:00:00}
