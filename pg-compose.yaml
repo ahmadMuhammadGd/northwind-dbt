@@ -1,0 +1,17 @@
+version: "3.8"
+services:
+  pgadmin:
+    image: dpage/pgadmin4
+    container_name: pgadmin4_container
+    restart: always
+    ports:
+      - "8888:80"
+    env_file:
+      - ./secrets.env
+    volumes:
+      - ./db-init:/db-init
+      - pgadmin-data:/var/lib/pgadmin
+
+
+volumes:
+  pgadmin-data:
