@@ -1,0 +1,12 @@
+northwind:
+  outputs:
+    dev:
+      dbname: northwind
+      host: localhost
+      pass: passw0rd
+      port: 5432
+      schema: dwh
+      threads: 3
+      type: postgres
+      user: ahmad
+  target: dev
