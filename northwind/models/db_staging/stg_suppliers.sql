@@ -29,18 +29,6 @@ WITH valid_suppliers AS (
         , homepage
     FROM 
         {{ source('northwind_raw', 'suppliers') }}
-    WHERE
-        supplier_id IS NOT NULL
-        AND
-        contact_name IS NOT NULL
-        AND
-        contact_title IS NOT NULL
-        AND
-        address IS NOT NULL
-        AND
-        postal_code IS NOT NULL
-        AND
-        phone IS NOT NULL
 )
 ,
 suppliers AS (

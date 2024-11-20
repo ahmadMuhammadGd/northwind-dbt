@@ -21,7 +21,7 @@ WITH products_data AS (
         quantity_per_unit::varchar(20),
         unit_price::numeric, 
         discontinued::BOOLEAN
-    FROM {{ source('northwind_raw', 'products') }} pi
+    FROM {{ source('northwind_raw', 'products') }} 
 )
 ,
 cleaned_products AS (
@@ -35,20 +35,6 @@ cleaned_products AS (
         , discontinued
     FROM 
         products_data
-    WHERE
-        product_id IS NOT NULL
-        AND
-        product_name IS NOT NULL
-        AND
-        supplier_id IS NOT NULL
-        AND
-        category_id IS NOT NULL
-        AND
-        discontinued IS NOT NULL
-        AND
-        unit_price IS NOT NULL
-        AND
-        unit_price > 0
 )
 
 SELECT

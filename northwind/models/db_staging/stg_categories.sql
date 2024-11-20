@@ -20,14 +20,6 @@ SELECT
     picture::bytea AS picture
 FROM
     {{ source('northwind_raw', 'categories') }}
-WHERE
-    category_id IS NOT NULL
-    AND
-    category_name IS NOT NULL
-    AND
-    description IS NOT NULL
-    AND
-    picture IS NOT NULL
 )
 
 SELECT

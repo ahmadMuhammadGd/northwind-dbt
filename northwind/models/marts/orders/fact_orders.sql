@@ -1,29 +1,29 @@
 {{
     config(
         materialized='incremental',
-        strategy='merge',
-        unique_key='transaction_id',
+        strategy='append',
+        unique_key='transaction_sk',
         indexes = 
         [
-            {"columns": ['transaction_id'], 'unique': True},
+            {"columns": ['transaction_sk'], 'unique': True},
             {"columns": ['location_sk'], 'unique': False},
             {"columns": ['product_sk'], 'unique': False},
-        ]
+        ],
     ) 
 }}
-
 
 WITH orders AS (
     SELECT
          order_id
+        , order_sk
         , order_date
         , required_date
         , shipped_date
-        , MD5(ship_address || ship_postal_code) AS location_sk
+        , MD5(ship_postal_code) AS location_sk
     FROM
         {{ ref('stg_orders') }}
     WHERE
-        shipped_date IS NOT NULL
+        ship_postal_code IS NOT NULL
 )
 ,
 order_details AS (
@@ -45,16 +45,29 @@ order_details AS (
 ,
 fact_table AS (
     SELECT
-        MD5(o.order_id||od.product_sk) AS transaction_id
-        ,o.order_id
-        ,o.order_date
-        ,o.required_date
-        ,o.shipped_date
-        ,o.location_sk
-        ,od.product_sk
-        ,od.unit_price
-        ,od.quantity
-        ,od.discount
+        MD5(order_sk || od.product_sk) as transaction_sk
+        ,o.order_sk
+        ,o.order_id::int
+        ,o.order_date::date AS order_date
+        ,o.required_date::date AS required_date
+        ,CASE 
+            WHEN 
+                o.shipped_date IS NULL 
+                THEN 'pending' 
+            ELSE 'shipped' 
+        END::varchar(10) AS order_status
+        ,CASE
+            WHEN 
+                o.shipped_date IS NOT NULL 
+                THEN o.shipped_date
+            ELSE
+                '9999-01-01'  
+        END::date AS shipped_date
+        ,o.location_sk::text
+        ,od.product_sk::text
+        ,od.unit_price::numeric
+        ,od.quantity::int
+        ,COALESCE(od.discount, 0)::numeric AS discount
     FROM
         orders o
     LEFT JOIN

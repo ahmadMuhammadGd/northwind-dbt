@@ -24,11 +24,3 @@ SELECT
 
 FROM
     {{ source('northwind_raw', 'order_details') }}
-WHERE
-    order_id IS NOT NULL
-    AND
-    product_id IS NOT NULL
-    AND
-    unit_price IS NOT NULL
-    AND
-    quantity IS NOT NULL

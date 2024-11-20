@@ -1,0 +1,99 @@
+version: 2
+models:
+  - name: fact_orders
+    description: "Fact table for orders"
+    columns:
+
+      - name: transaction_sk
+        description: "Unique transaction Sk for each order product combination"
+        data_type: text 
+        constraints:
+          - type: primary_key 
+        tests:
+          - unique 
+          - not_null 
+
+
+      - name: order_sk
+        description: "Unique ID for the order"
+        data_type: text 
+        tests:
+          - not_null 
+
+      - name: order_id
+        description: "ID of the order"
+        data_type: int
+        constraints:
+          - type: not_null
+        tests:
+          - not_null
+
+      - name: order_date
+        description: "Date the order was placed"
+        data_type: date
+        tests:
+          - not_null
+
+      - name: required_date
+        description: "Date the order is required to be fulfilled"
+        data_type: date
+        tests:
+          - not_null
+
+      - name: order_status
+        description: "shipped / pending"
+        data_type: TEXT
+        contrainsts:
+          - type: not_null
+        tests:
+          - not_null
+
+      - name: shipped_date
+        description: "Date the order was shipped"
+        data_type: date
+        tests:
+          - not_null
+
+      - name: location_sk
+        description: "Foreign key to the location dimension"
+        data_type: text
+        tests:
+          - not_null
+          - relationships:
+              to: ref('dim_location')
+              field: location_sk
+
+      - name: product_sk
+        description: "Foreign key to the product dimension"
+        data_type: text
+        constraints:
+          - type: not_null
+        tests:
+          - not_null
+          - relationships:
+              to: ref('dim_products')
+              field: product_sk
+
+      - name: unit_price
+        description: "Unit price of the product"
+        data_type: numeric
+        tests:
+          - not_null
+          - greater_than_zero
+
+      - name: quantity
+        description: "Quantity ordered"
+        data_type: int
+        tests:
+          - not_null
+          - greater_than_zero
+
+      - name: discount
+        description: "Discount applied to the order (as a percentage, 0-1)"
+        data_type: numeric
+        constraints:
+          - type: check
+            expression: "discount >= 0" 
+            expression: "discount <= 1"
+        tests:
+          - not_null

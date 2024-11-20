@@ -3,38 +3,57 @@ version: 2
 models:
   - name: fact_inventory
     description: "Fact table for inventory"
+    
     columns:
       - name: record_id
         description: "Surrogate key for SCD handling"
+        data_type: text
         tests:
           - unique
           - not_null
+        
+      - name: product_id
+        description: "Product key"
+        data_type: int
+        tests:
+          - not_null
+          - relationships:
+              to: ref('dim_products')
+              field: product_id
+
       - name: supplier_sk
         description: "Foreign key to the supplier dimension"
+        data_type: text
         tests:
           - relationships:
               to: ref('dim_suppliers')
               field: supplier_sk
-      - name: product_id
-        description: "Product key"
-        tests:
-          - not_null
-          # - relationships:
-          #     to: ref('dim_products')
-          #     field: product_id
+    
       - name: units_in_stock
         description: "Number of units in stock"
+        data_type: int
         tests:
           - not_null
           - positive
+    
       - name: units_on_order
         description: "Number of units on order"
+        data_type: int
         tests:
           - not_null
           - positive
+    
       - name: reorder_level
         description: "Reorder level"
+        data_type: int
         tests:
           - not_null
           - positive
 
+      - name: updated_at
+        description: "last time updated timestamp"
+        data_type: timestamp
+        constraints:
+          - type: not_null
+        tests:
+          - not_null

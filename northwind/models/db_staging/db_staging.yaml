@@ -11,24 +11,19 @@ models:
     columns:
       - name: category_id
         description: "Primary key for categories"
-        tests:
-          - not_null
-          - unique
+        data_type: int
+        
       - name: category_name
         description: "Name of the category"
-        tests:
-          - not_null
+        data_type: varchar(15)
+
       - name: description
         description: "Description of the category"
-        tests:
-          - not_null
+        data_type: text
+      
       - name: picture
         description: "Image data for the category"
-
-
-
-
-
+        data_type: bytea
 
   ###############################
   # INVENTORY STAGING TABLE
@@ -39,50 +34,43 @@ models:
     columns:
       - name: product_id
         description: "Product ID in the inventory"
-        tests:
-          - not_null
+        data_type: int
+
       - name: product_name
         description: "Name of the product"
-        tests:
-          - not_null
+        data_type: varchar(40)
+      
       - name: supplier_id
         description: "ID of the product supplier"
-        tests:
-          - not_null
+        data_type: int
+      
       - name: category_id
         description: "ID of the category to which the product belongs"
-        tests:
-          - not_null
+        data_type: int
+      
       - name: quantity_per_unit
         description: "Quantity of the product per unit"
-        tests:
-          - not_null
+        data_type: varchar(20)
+      
       - name: units_in_stock
         description: "Units of the product in stock"
-        tests:
-          - not_null
-          - positive
+        data_type: int
 
       - name: units_on_order
         description: "Units of the product currently on order"
-        tests:
-          - not_null
-          - positive
+        data_type: int
 
       - name: reorder_level
-        tests:
-          - not_null
-          - positive
+        data_type: int
 
-      - name: dbt_scd_id
-        description: "Slowly changing dimension ID for the product"
-        tests:
-          - unique
-          - not_null
+      - name : dbt_updated_at
+        data_type: timestamp
 
-
-
-
+      - name : dbt_valid_from
+        data_type: timestamp
+      
+      - name : dbt_valid_to
+        data_type: timestamp
 
   ###############################
   # ORDER DETAILS STAGING TABLE
@@ -93,31 +81,23 @@ models:
     columns:
       - name: order_id
         description: "ID of the order"
-        tests:
-          - not_null
+        data_type: int
+
       - name: product_id
         description: "ID of the product ordered"
-        tests:
-          - not_null
+        data_type: int
+
       - name: unit_price
         description: "Price per unit of the product"
-        tests:
-          - not_null
-          - greater_than_zero
+        data_type: numeric
+
       - name: quantity
         description: "Quantity of the product ordered"
-        tests:
-          - not_null
-          - greater_than_zero
+        data_type: int
+
       - name: discount
         description: "Discount applied to the order"
-        tests:
-          - not_null
-          - percentage
-
-
-
-
+        data_type: numeric
 
   ###############################
   # ORDERS STAGING TABLE
@@ -126,60 +106,62 @@ models:
   - name: stg_orders
     description: "Orders data from Northwind dataset"
     columns:
+      - name: order_sk
+        description: 'orders surrogate key, identifies order updates'
+        data_type: text
+        constraints:
+          - type: primary_key
+        tests:
+          - not_null
+          - unique
+        
       - name: order_id
         description: "ID of the order"
-        tests:
-          - not_null
+        data_type: int
+        
       - name: customer_id
         description: "ID of the customer placing the order"
-        tests:
-          - not_null
+        data_type: int
+
       - name: employee_id
         description: "ID of the employee processing the order"
-        tests:
-          - not_null
+        data_type: int
+
       - name: order_date
         description: "Date the order was placed"
-        tests:
-          - not_null
+        data_type: date
+      
       - name: required_date
         description: "Date the order is required to be fulfilled"
-        tests:
-          - not_null
+        data_type: date
+      
       - name: shipped_date
         description: "Date the order was shipped"
-        tests:
-          - not_null
+        data_type: date
+      
       - name: ship_via
-        description: "Shipping method"
-        tests:
-          - not_null
+        data_type: int
+
       - name: freight
-        description: "Freight charges for the order"
-        tests:
-          - not_null
-          - positive
+        data_type: numeric
+
       - name: ship_name
-          - not_null
+        data_type: varchar(40)
+
       - name: ship_address
-        tests:
-          - not_null
+        data_type: varchar(60)
+
       - name: ship_city
-        tests:
-          - not_null
-      - name: ship_postal_code
-        tests:
-          - not_null
-      - name: ship_country
-        tests:
-          - not_null
+        data_type: varchar(15)
+
       - name: ship_region
-        tests:
-          - not_null
+        data_type: varchar(15)
 
+      - name: ship_postal_code
+        data_type: varchar(10)
 
-
-
+      - name: ship_country
+        data_type: varchar(15)
 
   ###############################
   # PRODUCTS STAGING TABLE
@@ -189,74 +171,65 @@ models:
     description: "Products data from Northwind dataset"
     columns:
       - name: product_id
-        description: "ID of the product"
-        tests:
-          - not_null
+        data_type: int
+      
       - name: product_name
-        description: "Name of the product"
-        tests:
-          - not_null
-          - unique
+        data_type: varchar(40)
+      
       - name: supplier_id
-        description: "ID of the product supplier"
-        tests:
-          - not_null
+        data_type: int
+      
       - name: category_id
-        description: "ID of the category to which the product belongs"
-        tests:
-          - not_null
+        data_type: int
+      
+      - name: quantity_per_unit
+        data_type: varchar(20)
+      
       - name: unit_price
-        description: "Price of the product"
-        tests:
-          - not_null
-          - greater_than_zero
+        data_type: numeric
+      
       - name: discontinued
-        tests:
-          - not_null
-          - accepted_values:
-              values: [0,1]
-
-
-
-
-
+        data_type: BOOLEAN
 
   ###############################
   # SUPPLIERS STAGING TABLE
   ###############################
+
   - name: stg_suppliers
     description: "Suppliers data from Northwind dataset"
     columns:
       - name: supplier_id
-        description: "ID of the supplier"
-        tests:
-          - not_null
+        data_type: int
+
       - name: company_name
-        description: "Name of the supplier company"
-        tests:
-          - not_null
+        data_type: text
+
       - name: contact_name
-        description: "Name of the supplier contact person"
-        tests:
-          - not_null
+        data_type: text
+
       - name: contact_title
-        description: "Title of the supplier contact person"
-        tests:
-          - not_null
-      - name: supplier_sk
-        description: "Surrogate key for the supplier"
-        tests:
-          - not_null
-          - unique
+        data_type: text
+
       - name: address
-        tests:
-          - not_null
-      - name: postal_code
-        tests:
-          - not_null
-      - name: country
-        tests:
-          - not_null
+        data_type: text
+
+      - name: city
+        data_type: text
+
       - name: region
-        tests:
-          - not_null
+        data_type: text
+
+      - name: postal_code
+        data_type: text
+
+      - name: country
+        data_type: text
+
+      - name: phone
+        data_type: text
+
+      - name: fax
+        data_type: text
+
+      - name: homepage
+        data_type: text

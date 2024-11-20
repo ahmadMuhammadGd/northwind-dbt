@@ -17,7 +17,7 @@ WITH suppliers AS (
         , company_name
         , contact_name
         , contact_title
-        , MD5(address || postal_code) AS location_sk
+        -- , MD5(address || postal_code) AS location_sk
         , phone
         , fax
         , homepage

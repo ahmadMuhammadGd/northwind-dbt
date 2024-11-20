@@ -1,0 +1,78 @@
+version: 2
+
+models:
+  - name: dim_products
+    description: "Dimension table for products"
+    
+    columns:
+      - name: product_sk
+        description: "Surrogate key for SCD handling"
+        data_type: text
+        constraints:
+          - type: primary_key
+        tests:
+          - not_null
+          - unique
+ 
+      - name: product_id
+        description: "business key for products"
+        data_type: int
+        tests:
+          - not_null
+
+ 
+      - name: product_name
+        description: "Name of the product"
+        data_type: text
+        tests:
+          - not_null
+
+      - name: category_name
+        description: "Name of the category"
+        data_type: text
+
+      - name: unit_price
+        description: "Unit price of the product"
+        data_type: numeric       
+        cosntraints:
+          - type: check
+            excpression: "unit_price > 0"
+        tests:
+          - not_null
+          - greater_than_zero
+
+      - name: quantity_per_unit
+        description: "Quantity per unit"
+        data_type: text
+        tests:
+          - not_null
+
+      - name: is_active
+        data_type: boolean
+        tests:
+          - not_null
+          - scd_is_active:
+              column_name: is_active
+              id_column: product_id
+      
+      - name: start_date
+        description: "Start date for the validity of the record"
+        data_type: date
+        tests:
+          - not_null
+
+      - name: end_date
+        description: "End date for the validity of the record"
+        data_type: date
+        constraints:
+          - type: not_null
+          - type: check
+            columns: [start_date, end_date]
+            expression: end_date > start_date
+      
+      - name: valid_days
+        data_type: int
+        cosntraints:
+          - type: check
+            excpression: "vaid_days >= 0"
+            

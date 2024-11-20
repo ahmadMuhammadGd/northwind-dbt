@@ -29,7 +29,7 @@ WITH products_data AS (
         dbt_updated_at::TIMESTAMP,
         dbt_valid_from::TIMESTAMP,
         dbt_valid_to::TIMESTAMP
-    FROM {{ ref('CDC_products_inventory') }} pi
+    FROM {{ ref('CDC_products_inventory') }} 
 )
 ,
 cleaned_products AS (
@@ -49,22 +49,6 @@ cleaned_products AS (
         , dbt_valid_to
     FROM 
         products_data
-    WHERE
-        product_name IS NOT NULL
-        AND
-        supplier_id IS NOT NULL
-        AND
-        category_id IS NOT NULL
-        AND
-        quantity_per_unit IS NOT NULL
-        AND
-        units_in_stock IS NOT NULL
-        AND
-        units_on_order IS NOT NULL
-        AND
-        reorder_level IS NOT NULL
-        AND
-        discontinued IS NOT NULL
 )
 
 SELECT
