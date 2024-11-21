@@ -16,7 +16,11 @@ services:
       interval: 30s
       timeout: 60s
       retries: 5
-      start_period: 80s 
+      start_period: 80s
+    networks:
+      - local_development
 
 volumes:
   local_pgdata:
+networks:
+  local_development:
