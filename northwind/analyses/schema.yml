@@ -1,0 +1,26 @@
+version: 2
+
+analyses:
+  - name: inventory_status_summary
+    docs:
+      node_color: "#CC365D"
+    config:
+      tags: 'analyses'
+
+  - name: monthly_products_rank
+    docs:
+      node_color: "#CC365D"
+    config:
+      tags: 'analyses'
+
+  - name: monthly_sales_summary
+    docs:
+      node_color: "#CC365D"
+    config:
+      tags: 'analyses'
+
+  - name: yearly_sales_summary
+    docs:
+      node_color: "#CC365D"
+    config:
+      tags: 'analyses'
