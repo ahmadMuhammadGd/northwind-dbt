@@ -1,0 +1,27 @@
+version: 2
+
+models:
+
+  - name: stg_products
+    description: "Products data from Northwind dataset"
+    columns:
+      - name: product_id
+        data_type: int
+      
+      - name: product_name
+        data_type: varchar(40)
+      
+      - name: supplier_id
+        data_type: int
+      
+      - name: category_id
+        data_type: int
+      
+      - name: quantity_per_unit
+        data_type: varchar(20)
+      
+      - name: unit_price
+        data_type: numeric
+      
+      - name: discontinued
+        data_type: BOOLEAN

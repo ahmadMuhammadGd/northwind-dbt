@@ -1,0 +1,26 @@
+version: 2
+
+models:
+
+  - name: stg_order_details
+    description: "Order details from Northwind dataset"
+    columns:
+      - name: order_id
+        description: "ID of the order"
+        data_type: int
+
+      - name: product_id
+        description: "ID of the product ordered"
+        data_type: int
+
+      - name: unit_price
+        description: "Price per unit of the product"
+        data_type: numeric
+
+      - name: quantity
+        description: "Quantity of the product ordered"
+        data_type: int
+
+      - name: discount
+        description: "Discount applied to the order"
+        data_type: numeric

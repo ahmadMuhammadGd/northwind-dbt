@@ -1,0 +1,22 @@
+version: 2
+
+models:
+
+  - name: stg_categories
+    description: "Categories data from Northwind dataset"
+    columns:
+      - name: category_id
+        description: "Primary key for categories"
+        data_type: int
+        
+      - name: category_name
+        description: "Name of the category"
+        data_type: varchar(15)
+
+      - name: description
+        description: "Description of the category"
+        data_type: text
+      
+      - name: picture
+        description: "Image data for the category"
+        data_type: bytea

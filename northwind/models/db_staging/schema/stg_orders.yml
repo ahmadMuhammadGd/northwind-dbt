@@ -1,0 +1,62 @@
+version: 2
+
+models:
+  - name: stg_orders
+    description: "Orders data from Northwind dataset"
+    columns:
+      - name: order_sk
+        description: 'orders surrogate key, identifies order updates'
+        data_type: text
+        constraints:
+          - type: primary_key
+        tests:
+          - not_null
+          - unique
+        
+      - name: order_id
+        description: "ID of the order"
+        data_type: int
+        
+      - name: customer_id
+        description: "ID of the customer placing the order"
+        data_type: int
+
+      - name: employee_id
+        description: "ID of the employee processing the order"
+        data_type: int
+
+      - name: order_date
+        description: "Date the order was placed"
+        data_type: date
+      
+      - name: required_date
+        description: "Date the order is required to be fulfilled"
+        data_type: date
+      
+      - name: shipped_date
+        description: "Date the order was shipped"
+        data_type: date
+      
+      - name: ship_via
+        data_type: int
+
+      - name: freight
+        data_type: numeric
+
+      - name: ship_name
+        data_type: varchar(40)
+
+      - name: ship_address
+        data_type: varchar(60)
+
+      - name: ship_city
+        data_type: varchar(15)
+
+      - name: ship_region
+        data_type: varchar(15)
+
+      - name: ship_postal_code
+        data_type: varchar(10)
+
+      - name: ship_country
+        data_type: varchar(15)
