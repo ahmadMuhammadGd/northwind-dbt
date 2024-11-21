@@ -6,7 +6,7 @@
     indexes = [
         {'columns': ['record_id'], 'unique': True},
         {'columns': ['supplier_sk'], 'unique': False},
-        {'columns': ['product_id'], 'unique': False}
+        {'columns': ['product_sk'], 'unique': False}
     ]
  )
 }}
@@ -35,7 +35,7 @@ WITH new_inventory AS (
 enriched AS (
     SELECT
         i.CDC_sk::text AS record_id,
-        p.product_id::int,
+        p.product_sk::text,
         s.supplier_sk::text,
         i.units_in_stock::int,
         i.units_on_order::int,
@@ -43,10 +43,12 @@ enriched AS (
         i.updated_at::timestamp AS updated_at
     FROM
         new_inventory i
+    
     LEFT JOIN
         {{ ref('dim_suppliers') }} s  
     ON
         s.supplier_id = i.supplier_id
+    
     LEFT JOIN
         {{ ref('dim_products') }} p 
     ON

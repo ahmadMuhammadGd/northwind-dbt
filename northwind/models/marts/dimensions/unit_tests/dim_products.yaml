@@ -1,6 +1,6 @@
 
 unit_tests:
-  - name: dim_product_full_refresh
+  - name: v1_test_dim_product_full_refresh
     model: dim_products
     overrides:
       macros:
@@ -29,7 +29,7 @@ unit_tests:
         - {product_id: 1, unit_price: 20, start_date: 2020-02-01, end_date: 9999-01-01, is_active: true,  valid_days: 99999999}
 
 
-  - name: dim_product_incremental
+  - name: v1_test_dim_product_incremental
     model: dim_products
     overrides:
       macros:

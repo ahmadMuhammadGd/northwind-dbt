@@ -59,7 +59,14 @@ models:
           - not_null
 
     versions:
-      - v: 1    
+      - v: 1  
+        
       - v: 2
         columns:
           - include: all
+            exclude: 
+            - product_id
+          - name: product_sk
+            data_type: text
+            constraints:
+              - type: not_null
