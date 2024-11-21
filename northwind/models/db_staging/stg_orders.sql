@@ -1,10 +1,11 @@
 {{
     config(
-        materialized='incremental',
-        strategy='append',
-        unique_key='order_id',
+        materialized='table',
+        incremental_strategy='append',
+        unique_key='order_sk',
         indexes = 
         [
+            {"columns": ['order_sk'], 'unique': true},
             {"columns": ['order_id'], 'unique': False},
             {"columns": ['customer_id'], 'unique': False},
             {"columns": ['employee_id'], 'unique': False},
@@ -14,9 +15,8 @@
 }}
 
 
-
-
 SELECT
+    MD5(order_id::TEXT || COALESCE(shipped_date::TEXT, '')) AS order_sk,
     order_id::INT, 
     customer_id::CHARACTER, 
     employee_id::int, 
@@ -34,32 +34,3 @@ SELECT
 
 FROM
     {{ source('northwind_raw', 'orders') }}
-
-WHERE
-    order_id IS NOT NULL
-    AND
-    customer_id IS NOT NULL
-    AND
-    employee_id IS NOT NULL
-    AND
-    order_date IS NOT NULL
-    AND
-    required_date IS NOT NULL
-    AND
-    shipped_date IS NOT NULL
-    AND
-    ship_via IS NOT NULL
-    AND
-    freight IS NOT NULL
-    AND
-    ship_name IS NOT NULL
-    AND
-    ship_address IS NOT NULL
-    AND
-    ship_city IS NOT NULL
-    AND
-    ship_region IS NOT NULL
-    AND
-    ship_postal_code IS NOT NULL
-    AND
-    ship_country IS NOT NULL

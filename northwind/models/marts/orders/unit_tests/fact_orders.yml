@@ -1,0 +1,83 @@
+unit_tests:
+  - name: fact_orders_test_order_status_logic_shipped_date_is_not_null
+    model: fact_orders
+    overrides:
+      macros:
+        is_incremental: false
+    given:
+      - input: ref('stg_orders')
+        rows:
+          - {order_sk: a, order_id: 1, order_date: 2020-01-01, shipped_date: 2020-01-01, ship_postal_code: 'not null'}
+      
+      - input: ref('stg_order_details')
+        rows:
+          - {order_id: 1}
+      
+      - input: ref('dim_products')
+        rows:
+          - {product_sk: a}
+
+      - input: ref('dim_location')
+        rows:
+          - {location_sk: a}
+    expect:
+      rows:
+        - {order_id: 1, order_date: 2020-01-01, shipped_date: 2020-01-01, order_status: 'shipped'}
+
+
+  - name: fact_orders_test_shipped_date_is_null
+    model: fact_orders
+    overrides:
+      macros:
+        is_incremental: false
+    given:
+      - input: ref('stg_orders')
+        rows:
+          - {order_sk: a, order_id: 1, order_date: 2020-01-01,  ship_postal_code: 'not null'}
+      
+      - input: ref('stg_order_details')
+        rows:
+          - {order_id: 1}
+      
+      - input: ref('dim_products')
+        rows:
+          - {product_sk: a}
+      
+      - input: ref('dim_location')
+        rows:
+          - {location_sk: a}
+    expect:
+      rows:
+        - {order_id: 1, order_date: 2020-01-01, shipped_date: 9999-01-01, order_status: pending}
+
+
+  - name: fact_orders_test_incremental_load
+    model: fact_orders
+    overrides:
+      macros:
+        is_incremental: false
+    given:
+      - input: ref('stg_orders')
+        rows:
+          - {order_sk: a, order_id: 1, order_date: 2020-01-01, ship_postal_code: 'not null'}
+          - {order_sk: a, order_id: 1, order_date: 2020-01-01, shipped_date: 2020-02-01,  ship_postal_code: 'not null'}
+      
+      - input: ref('stg_order_details')
+        rows:
+          - {order_id: 1}
+      
+      - input: ref('dim_products')
+        rows:
+          - {product_sk: a}
+
+      - input: ref('dim_location')
+        rows:
+          - {location_sk: a}
+
+      - input: this
+        rows:
+          - {order_sk: a, order_id: 1, order_date: 2020-01-01, shipped_date: 9999-01-01, order_status: pending}
+    expect:
+      rows:
+        - {order_sk: a, order_id: 1, order_date: 2020-01-01, shipped_date: 9999-01-01, order_status: pending}
+        - {order_sk: a, order_id: 1, order_date: 2020-01-01, shipped_date: 2020-02-01, order_status: shipped}

@@ -1,7 +1,7 @@
 {{
     config(
         materialized='incremental',
-        strategy='merge',
+        incremental_strategy='merge',
         unique_key='product_sk',
         indexes = 
         [
@@ -30,6 +30,10 @@ WITH expanded_scd AS (
         od.order_id = o.order_id
 	WHERE 
 		o.order_date IS NOT NULL
+		AND
+		unit_price IS NOT NULL
+		AND
+		unit_price >= 0
 )
 ,
 shrinked_scd AS (
@@ -64,19 +68,19 @@ scd_minimal AS (
 ,
 enriched_scd AS (
 	SELECT 
-		scd.product_sk,
-		scd.product_id,
-		p.product_name,
-		c.category_name,
-		scd.unit_price,
-        p.quantity_per_unit,
-		scd.start_date,
-		scd.end_date,
+		scd.product_sk::TEXT,
+		scd.product_id::INT,
+		p.product_name::TEXT,
+		c.category_name::TEXT,
+		scd.unit_price::NUMERIC,
+        p.quantity_per_unit::TEXT,
+		scd.start_date::DATE,
+		scd.end_date::DATE,
 		scd.is_active::bool,
 		CASE 
             WHEN scd.is_active = 1 
-            THEN {{ valid_days_currently_active_flag }} 
-            ELSE end_date - start_date 
+            THEN {{ valid_days_currently_active_flag }}::INT 
+            ELSE (end_date - start_date)::INT
         END AS valid_days
 	FROM 
 		scd_minimal scd

@@ -1,7 +1,7 @@
 {{
     config(
         materialized='incremental',
-        strategy='merge',
+        incremental_strategy='merge',
         unique_key='supplier_sk',
         indexes = 
         [
@@ -12,15 +12,16 @@
 
 WITH suppliers AS (
     SELECT
-        DISTINCT
-        supplier_sk
-        , company_name
-        , contact_name
-        , contact_title
-        , MD5(address || postal_code) AS location_sk
-        , phone
-        , fax
-        , homepage
+        DISTINCT ON (supplier_id)
+        MD5(company_name || contact_title) AS supplier_sk
+        , supplier_id::int
+        , company_name::text
+        , contact_name::text
+        , contact_title::text
+        -- , MD5(address || postal_code) AS location_sk
+        , phone::text
+        , fax::text
+        , homepage::text
     FROM 
         {{ ref('stg_suppliers') }}
 )

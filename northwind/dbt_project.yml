@@ -1,4 +1,3 @@
-
 # Name your project! Project names should contain only lowercase characters
 # and underscores. A good package name should reflect your organization's
 # name or the intended use of these models
@@ -31,33 +30,50 @@ clean-targets:         # directories to be removed by `dbt clean`
 # files using the `{{ config(...) }}` macro.
 models:
   northwind:
-    
+
     db_staging:
       +docs:
         node_color: "green"
       +tags: "staging"
+      +schema: staging
 
     marts:
+      +on_schema_change: "fail"
+      
+      +contract:
+        enforced: true
+
       dimensions:
+        +severity: error
         +docs:
           node_color: "brown"
         +tags: "dimensions"
-    
+        +schema: dims
+      
       inventory:
+        +severity: error
         +docs:
           node_color: "blue"
         +group: inventory
         +tags: "inventory"
+        +schema: facts
     
       orders:
+        +severity: error
         +docs:
           node_color: "black"
         +group: orders
         +tags: "orders"
+        +schema: facts
+
+      unit_tests:
+        +docs:
+          node_color: "black"
+        +tags: "unit_tests"
 
 tests:
   +store_failures: true
   +schema: _sad_test_failures
   northwind:
-    db_staging:
-      +severity: warn
+    # db_staging:
+    #   +severity: warn

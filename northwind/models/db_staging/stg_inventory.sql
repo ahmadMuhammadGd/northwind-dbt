@@ -1,7 +1,7 @@
 {{
     config(
         materialized='incremental',
-        strategy='append',
+        incremental_strategy='append',
         unique_key='dbt_scd_id',
         indexes = 
         [
@@ -12,24 +12,31 @@
     ) 
 }}
 
-
-
 WITH products_data AS (
     SELECT
-        product_id::int, 
-        product_name::varchar(40), 
-        supplier_id::int, 
-        category_id::int, 
-        quantity_per_unit::varchar(20), 
-        units_in_stock::int, 
-        units_on_order::int, 
-        reorder_level::int, 
-        discontinued::BOOLEAN,
-        dbt_scd_id::text,
-        dbt_updated_at::TIMESTAMP,
-        dbt_valid_from::TIMESTAMP,
-        dbt_valid_to::TIMESTAMP
-    FROM {{ ref('CDC_products_inventory') }} pi
+        cdc.product_id::int, 
+        cdc.product_name::varchar(40), 
+        cdc.supplier_id::int, 
+        cdc.category_id::int, 
+        cdc.quantity_per_unit::varchar(20), 
+        cdc.units_in_stock::int, 
+        cdc.units_on_order::int, 
+        cdc.reorder_level::int, 
+        cdc.discontinued::BOOLEAN,
+        cdc.dbt_scd_id::text,
+        cdc.dbt_updated_at::TIMESTAMP,
+        cdc.dbt_valid_from::TIMESTAMP,
+        cdc.dbt_valid_to::TIMESTAMP
+    FROM {{ ref('CDC_products_inventory') }} as cdc
+
+    {% if is_incremental() %}
+    LEFT JOIN
+        {{ this }} t
+    ON
+        t.dbt_scd_id = cdc.dbt_scd_id
+    WHERE
+        t.dbt_scd_id IS NULL
+    {% endif %}
 )
 ,
 cleaned_products AS (
@@ -49,22 +56,6 @@ cleaned_products AS (
         , dbt_valid_to
     FROM 
         products_data
-    WHERE
-        product_name IS NOT NULL
-        AND
-        supplier_id IS NOT NULL
-        AND
-        category_id IS NOT NULL
-        AND
-        quantity_per_unit IS NOT NULL
-        AND
-        units_in_stock IS NOT NULL
-        AND
-        units_on_order IS NOT NULL
-        AND
-        reorder_level IS NOT NULL
-        AND
-        discontinued IS NOT NULL
 )
 
 SELECT

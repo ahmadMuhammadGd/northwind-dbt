@@ -1,7 +1,7 @@
 {{
     config(
         materialized='incremental',
-        strategy='append',
+        incremental_strategy='append',
         unique_key='location_sk',
         indexes = 
         [
@@ -11,13 +11,12 @@
 }}
 
     {% set not_null_cols = [
-        'address', 'city', 'postal_code'
+        'postal_code'
     ] %}
 
     WITH suppliers_location AS (
         SELECT DISTINCT
-            address
-            ,city
+            city
             ,region
             ,postal_code
             ,country
@@ -32,8 +31,7 @@
     ,
     orders_location AS (
         SELECT DISTINCT
-            ship_address        AS address
-            ,ship_city           AS city
+            ship_city            AS city
             ,ship_region         AS region
             ,ship_postal_code    AS postal_code
             ,ship_country        AS country
@@ -62,9 +60,16 @@ pre_location_dim AS (
 ,
 location_dim AS (
     SELECT
-        MD5(address || postal_code) AS location_sk
+        MD5(postal_code) AS location_sk
         , *
     FROM 
         pre_location_dim
 )
-SELECT * FROM location_dim
+SELECT l.* FROM location_dim l
+{% if is_incremental() %}
+LEFT JOIN
+    {{ this }} t 
+    ON t.location_sk = l.location_sk
+WHERE
+    t.location_sk IS NULL
+{% endif %}

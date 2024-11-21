@@ -1,44 +1,59 @@
 {{
-    config(
-        materialized='incremental',
-        strategy='append',
-        unique_key='record_id',
-        indexes = 
-        [
-            {"columns": ['record_id'], 'unique': True},
-            {"columns": ['supplier_sk'], 'unique': False},
-            {"columns": ['product_id'], 'unique': False},
-        ]
-    ) 
+ config(
+    materialized = 'incremental',
+    incremental_strategy = 'append',
+    unique_key = 'record_id',
+    indexes = [
+        {'columns': ['record_id'], 'unique': True},
+        {'columns': ['supplier_sk'], 'unique': False},
+        {'columns': ['product_id'], 'unique': False}
+    ]
+ )
 }}
 
-WITH inventory AS (
+WITH new_inventory AS (
     SELECT
-        product_id
-        , supplier_id
-        , units_in_stock
-        , units_on_order
-        , reorder_level
-        , dbt_scd_id
-        , dbt_updated_at
+        cdc.product_id,
+        cdc.supplier_id,
+        cdc.units_in_stock,
+        cdc.units_on_order,
+        cdc.reorder_level,
+        cdc.dbt_scd_id,
+        cdc.dbt_updated_at
     FROM
-        {{ ref('stg_inventory') }}
-)
-,
+        {{ ref('stg_inventory') }} cdc
+    
+    {% if is_incremental() %}
+    LEFT JOIN
+        {{ this }} t
+    ON
+        t.record_id = cdc.dbt_scd_id
+    WHERE
+        t.record_id IS NULL
+    {% endif %}
+),
 enriched AS (
     SELECT
-        i.product_id
-        , s.supplier_sk
-        , i.units_in_stock
-        , i.units_on_order
-        , i.reorder_level
-        , i.dbt_scd_id as record_id
-        , i.dbt_updated_at as updated_at
+        i.dbt_scd_id::text AS record_id,
+        p.product_id::int,
+        s.supplier_sk::text,
+        i.units_in_stock::int,
+        i.units_on_order::int,
+        i.reorder_level::int,
+        i.dbt_updated_at::timestamp AS updated_at
     FROM
-        inventory i
+        new_inventory i
     LEFT JOIN
-        {{ ref('stg_suppliers') }} s  
+        {{ ref('dim_suppliers') }} s  
     ON
         s.supplier_id = i.supplier_id
+    LEFT JOIN
+        {{ ref('dim_products') }} p 
+    ON
+        p.product_id = i.product_id
+    AND
+        i.dbt_updated_at >= p.start_date
+    AND
+        i.dbt_updated_at < p.end_date
 )
 SELECT * FROM enriched

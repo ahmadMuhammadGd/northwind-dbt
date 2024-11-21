@@ -1,0 +1,50 @@
+
+unit_tests:
+  - name: fact_inventory_full_refresh
+    model: fact_inventory
+    overrides:
+      macros:
+        is_incremental: false 
+    given:
+      - input: ref('stg_inventory')
+        rows:
+        - {dbt_scd_id: a, units_in_stock: 10, units_on_order: 20, reorder_level: 20, dbt_updated_at: 2020-01-01 00:00:00}
+      
+      - input: ref('dim_suppliers')
+        rows:
+        - {supplier_id: 1}
+
+      - input: ref('dim_products')
+        rows:
+          - {product_id: 1}
+    expect:
+      rows:
+        - {record_id: a, units_in_stock: 10, units_on_order: 20, reorder_level: 20, updated_at: 2020-01-01 00:00:00}
+
+
+  - name: fact_inventory_incremental
+    model: fact_inventory
+    overrides:
+      macros:
+        is_incremental: true
+    given:
+      - input: ref('stg_inventory')
+        rows:
+          - {dbt_scd_id: b, units_in_stock: 50, units_on_order: 10, reorder_level: 20, dbt_updated_at: 2020-01-02 00:00:00}
+      
+      - input: ref('dim_suppliers')
+        rows:
+          - {supplier_id: 1}
+      
+      - input: ref('dim_products')
+        rows:
+          - {product_id: 1}
+        
+      - input: this
+        rows:
+          - {record_id: a, units_in_stock: 10, units_on_order: 20, reorder_level: 20, updated_at: 2020-01-01 00:00:00}
+    
+    expect:
+      # what will be inserted/merged into my_incremental_model
+      rows:
+        - {record_id: b, units_in_stock: 50, units_on_order: 10, reorder_level: 20, updated_at: 2020-01-02 00:00:00}

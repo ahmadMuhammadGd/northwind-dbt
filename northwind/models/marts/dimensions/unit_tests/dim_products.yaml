@@ -1,0 +1,66 @@
+
+unit_tests:
+  - name: dim_product_full_refresh
+    model: dim_products
+    overrides:
+      macros:
+        is_incremental: false 
+    given:
+      - input: ref('stg_order_details')
+        rows:
+          - {order_id: 1, product_id: 1, unit_price: 10}
+          - {order_id: 2, product_id: 1, unit_price: 20}
+
+      - input: ref('stg_orders')
+        rows:
+          - {order_id: 1, order_date: 2020-01-01}
+          - {order_id: 2, order_date: 2020-02-01}
+   
+      - input: ref('stg_products')
+        rows:
+          - {product_id: 1}
+
+      - input: ref('stg_categories')
+        rows:
+          - {category_sk: 'hashedSK'}
+    expect:
+      rows:
+        - {product_id: 1, unit_price: 10, start_date: 2020-01-01, end_date: 2020-01-31, is_active: false, valid_days: 30}
+        - {product_id: 1, unit_price: 20, start_date: 2020-02-01, end_date: 9999-01-01, is_active: true,  valid_days: 99999999}
+
+
+  - name: dim_product_incremental
+    model: dim_products
+    overrides:
+      macros:
+        is_incremental: true 
+    given:
+      - input: ref('stg_order_details')
+        rows:
+          - {order_id: 1, product_id: 1, unit_price: 10}
+          - {order_id: 2, product_id: 1, unit_price: 20}
+          - {order_id: 3, product_id: 1, unit_price: 25}
+
+      - input: ref('stg_orders')
+        rows:
+          - {order_id: 1, order_date: 2020-01-01}
+          - {order_id: 2, order_date: 2020-02-01}
+          - {order_id: 3, order_date: 2020-02-15}
+   
+      - input: ref('stg_products')
+        rows:
+          - {product_id: 1}
+
+      - input: ref('stg_categories')
+        rows:
+          - {category_sk: 'hashedSK'}
+      
+      - input: this
+        rows:
+          - {product_id: 1, unit_price: 10, start_date: 2020-01-01, end_date: 2020-01-31, is_active: false, valid_days: 30}
+          - {product_id: 1, unit_price: 20, start_date: 2020-02-01, end_date: 9999-01-01, is_active: true,  valid_days: 99999999}
+    expect:
+      rows:
+        - {product_id: 1, unit_price: 10, start_date: 2020-01-01, end_date: 2020-01-31, is_active: false, valid_days: 30}
+        - {product_id: 1, unit_price: 20, start_date: 2020-02-01, end_date: 2020-02-14, is_active: false, valid_days: 13}
+        - {product_id: 1, unit_price: 25, start_date: 2020-02-15, end_date: 9999-01-01, is_active: true,  valid_days: 99999999}
