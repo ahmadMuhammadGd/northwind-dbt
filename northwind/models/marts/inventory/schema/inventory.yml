@@ -3,7 +3,7 @@ version: 2
 models:
   - name: fact_inventory
     description: "Fact table for inventory"
-    
+    latest_version: 2
     columns:
       - name: record_id
         description: "Surrogate key for SCD handling"
@@ -57,3 +57,9 @@ models:
           - type: not_null
         tests:
           - not_null
+
+    versions:
+      - v: 1    
+      - v: 2
+        columns:
+          - include: all

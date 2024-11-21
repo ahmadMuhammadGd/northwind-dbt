@@ -18,29 +18,29 @@ WITH new_inventory AS (
         cdc.units_in_stock,
         cdc.units_on_order,
         cdc.reorder_level,
-        cdc.dbt_scd_id,
-        cdc.dbt_updated_at
+        cdc.CDC_sk,
+        cdc.updated_at
     FROM
-        {{ ref('stg_inventory') }} cdc
+        {{ ref('stg_inventory', version=2) }} cdc
     
     {% if is_incremental() %}
     LEFT JOIN
         {{ this }} t
     ON
-        t.record_id = cdc.dbt_scd_id
+        t.record_id = cdc.CDC_sk
     WHERE
         t.record_id IS NULL
     {% endif %}
 ),
 enriched AS (
     SELECT
-        i.dbt_scd_id::text AS record_id,
+        i.CDC_sk::text AS record_id,
         p.product_id::int,
         s.supplier_sk::text,
         i.units_in_stock::int,
         i.units_on_order::int,
         i.reorder_level::int,
-        i.dbt_updated_at::timestamp AS updated_at
+        i.updated_at::timestamp AS updated_at
     FROM
         new_inventory i
     LEFT JOIN
@@ -52,8 +52,8 @@ enriched AS (
     ON
         p.product_id = i.product_id
     AND
-        i.dbt_updated_at >= p.start_date
+        i.updated_at >= p.start_date
     AND
-        i.dbt_updated_at < p.end_date
+        i.updated_at < p.end_date
 )
 SELECT * FROM enriched
