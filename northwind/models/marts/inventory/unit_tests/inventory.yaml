@@ -13,7 +13,10 @@ unit_tests:
       - input: ref('dim_suppliers')
         rows:
         - {supplier_id: 1}
-    
+
+      - input: ref('dim_products')
+        rows:
+          - {product_id: 1}
     expect:
       rows:
         - {record_id: a, units_in_stock: 10, units_on_order: 20, reorder_level: 20, updated_at: 2020-01-01 00:00:00}
@@ -33,6 +36,10 @@ unit_tests:
         rows:
           - {supplier_id: 1}
       
+      - input: ref('dim_products')
+        rows:
+          - {product_id: 1}
+        
       - input: this
         rows:
           - {record_id: a, units_in_stock: 10, units_on_order: 20, reorder_level: 20, updated_at: 2020-01-01 00:00:00}

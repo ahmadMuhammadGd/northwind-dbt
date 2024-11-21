@@ -19,15 +19,20 @@ WITH orders AS (
         , order_date
         , required_date
         , shipped_date
-        , MD5(ship_postal_code) AS location_sk
+        , l.location_sk
     FROM
         {{ ref('stg_orders') }}
+    LEFT JOIN
+        {{ ref('dim_location') }} l
+    ON
+        l.location_sk = ship_postal_code
     WHERE
         ship_postal_code IS NOT NULL
 )
 ,
 order_details AS (
     SELECT
+    DISTINCT
         p.product_SK
         , o.order_id
         , o.unit_price

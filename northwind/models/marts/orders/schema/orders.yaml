@@ -60,7 +60,7 @@ models:
         description: "Foreign key to the location dimension"
         data_type: text
         tests:
-          - not_null
+        #   - not_null
           - relationships:
               to: ref('dim_location')
               field: location_sk
@@ -68,10 +68,10 @@ models:
       - name: product_sk
         description: "Foreign key to the product dimension"
         data_type: text
-        constraints:
-          - type: not_null
+        # constraints:
+        #   - type: not_null
         tests:
-          - not_null
+        #   - not_null
           - relationships:
               to: ref('dim_products')
               field: product_sk

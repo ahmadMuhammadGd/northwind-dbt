@@ -66,6 +66,11 @@ models:
         +tags: "orders"
         +schema: facts
 
+      unit_tests:
+        +docs:
+          node_color: "black"
+        +tags: "unit_tests"
+
 tests:
   +store_failures: true
   +schema: _sad_test_failures

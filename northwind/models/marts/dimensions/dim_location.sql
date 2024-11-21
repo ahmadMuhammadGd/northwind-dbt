@@ -65,4 +65,11 @@ location_dim AS (
     FROM 
         pre_location_dim
 )
-SELECT * FROM location_dim
+SELECT l.* FROM location_dim l
+{% if is_incremental() %}
+LEFT JOIN
+    {{ this }} t 
+    ON t.location_sk = l.location_sk
+WHERE
+    t.location_sk IS NULL
+{% endif %}

@@ -24,4 +24,7 @@ jobs:
         run: |
           cd ./northwind
           dbt deps
-          dbt build --profiles-dir ..
+          dbt snapshot --profiles-dir ..
+          dbt run --profiles-dir ..
+          dbt run --full-refresh --profiles-dir ..
+          dbt test --profiles-dir ..
