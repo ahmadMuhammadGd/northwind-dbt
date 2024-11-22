@@ -39,12 +39,12 @@ jobs:
                 host: \"$NORTHWIND_DB_HOST\"
                 pass: \"$NORTHWIND_DB_PASSWORD\"
                 port: 5432
-                schema: \"$NORTHWIND_DBT_SCHEMA\"
+                schema: \"$NORTHWIND_DB_SCHEMA\"
                 type: postgres
                 user: \"$NORTHWIND_DB_USER\"
             target: dev
           " > ~/.dbt/profiles.yml
-          echo ~/.dbt/profiles.yml
+          cat ~/.dbt/profiles.yml
           
       - name: 🚀 Run dbt Commands
         run: |
