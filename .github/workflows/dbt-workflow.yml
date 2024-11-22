@@ -31,7 +31,6 @@ jobs:
           NORTHWIND_DB_SCHEMA: ${{ secrets.NORTHWIND_DBT_SCHEMA }}
         run: |
           cd ./northwind
-          dbt debug --profiles-dir ..--profiles-dir ..
           dbt deps --profiles-dir ..
           dbt snapshot --profiles-dir ..
           dbt run -f --profiles-dir ..
