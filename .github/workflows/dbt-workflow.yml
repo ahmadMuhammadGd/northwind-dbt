@@ -22,15 +22,13 @@ jobs:
       - name: 🛠️ Initialize Database and Run dbt
         run: sh github-actions-psql-init.sh
      
-      - name: 📦 Set up profiles.yml variables
+      - name: 🚀 Run dbt Commands
         env:
           NORTHWIND_DB_NAME: ${{ secrets.NORTHWIND_DB_NAME }}
           NORTHWIND_DB_USER: ${{ secrets.NORTHWIND_USERNAME }}
           NORTHWIND_DB_PASSWORD: ${{ secrets.NORTHWIND_PASSWORD }}
           NORTHWIND_DB_HOST: ${{ secrets.NORTHWIND_HOST }}
           NORTHWIND_DB_SCHEMA: ${{ secrets.NORTHWIND_DBT_SCHEMA }}
-          
-      - name: 🚀 Run dbt Commands
         run: |
           cd ./northwind
           dbt ddebug
