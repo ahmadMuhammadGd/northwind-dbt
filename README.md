@@ -2,6 +2,10 @@
 
 
 
+![ci/cd pipeline with dbt data pipeline](./readme_assets/Hero.png)
+
+
+
 > **DISCLAIMER:** This project uses [northwind](https://docs.yugabyte.com/preview/sample-data/northwind/) as source data, which is a publicly avaiable dataset.  
 
 
@@ -148,5 +152,18 @@ erDiagram
 
 
 # 🤯 Data Lineage
-> **🤸 Note** the two versions of `stg_inventory` and `fact_inventory`, `unit tests` are also included.                 
-![DAG](./readme_assets/dbt-dag.png)
+
+
+Notice that `fact_inventory` has two versions. The first version uses source **snapshots** as an upstream model for its pipeline. On the other hand, in the second version, I realized that the **snapshot** step was unnecessary, so we removed it, resulting in two new models: `stg_inventory.v2` and `fact_inventory.v2`.
+
+
+![dbt dag](./readme_assets/dbt-dag.png)
+
+
+
+
+# 📚 Resources
+- [📑 dbt Unit Tests](https://docs.getdbt.com/docs/build/unit-tests)
+- [🔧 dbt Model Versioning](https://docs.getdbt.com/docs/collaborate/govern/model-versions)
+- [🔨 Test Driven Development (TDD) in Software Engineering](https://en.wikipedia.org/wiki/Test-driven_development)
+- [🤔 Unit Tests 🆚 Integrations Tests](https://stackoverflow.com/questions/5357601/whats-the-difference-between-unit-tests-and-integration-tests)
