@@ -31,7 +31,7 @@ jobs:
           NORTHWIND_DB_SCHEMA: ${{ secrets.NORTHWIND_DBT_SCHEMA }}
         run: |
           cd ./northwind
-          dbt ddebug
+          dbt debug
           dbt deps
           dbt snapshot
           dbt run -f
