@@ -4,9 +4,9 @@ northwind:
       dbname: "{{ env_var('NORTHWIND_DB_NAME') }}"
       host:   "{{ env_var('NORTHWIND_DB_HOST') }}"
       pass:   "{{ env_var('NORTHWIND_DB_PASSWORD') }}"
-      port: 5432
+      port:   5432
       schema: "{{ env_var('NORTHWIND_DB_SCHEMA') }}"
       threads: 3
-      type: postgres
-      user: "{{ env_var('NORTHWIND_DB_USER') }}"
+      type:   postgres
+      user:   "{{ env_var('NORTHWIND_DB_USER') }}"
   target: dev
