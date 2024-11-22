@@ -147,7 +147,6 @@ erDiagram
 
 
 
-
 # 🤯 Data Lineage
 > **🤸 Note** the two versions of `stg_inventory` and `fact_inventory`, `unit tests` are also included.                 
 ![DAG](./readme_assets/dbt-dag.png)
