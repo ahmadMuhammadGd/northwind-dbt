@@ -1,6 +1,8 @@
 name: 🔨 Building env dbt models 👾
 
-on: [push]
+on:
+  pull_request:
+    branches: [main]
 
 jobs:
   Test-Development-Initialization:
