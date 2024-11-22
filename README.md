@@ -18,7 +18,7 @@
 
 - **Enforced Schema ✊**: Prevents unexpected `data quality` issues caused by changes in the source schema.
 
-- **Slowly Chaning Dimension (SCD) type 2 🐢**: Products SCD but with old way
+- **Slowly Chaning Dimension (SCD) type 2 🐢**: Products SCD but with old way.
 
 
 
