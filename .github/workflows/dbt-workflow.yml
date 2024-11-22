@@ -24,13 +24,14 @@ jobs:
      
       - name: 🚀 Run dbt Commands
         env:
-          NORTHWIND_DB_NAME: ${{ secrets.NORTHWIND_DB_NAME }}
-          NORTHWIND_DB_USER: ${{ secrets.NORTHWIND_USERNAME }}
+          NORTHWIND_DB_NAME:     ${{ secrets.NORTHWIND_DB_NAME }}
+          NORTHWIND_DB_USER:     ${{ secrets.NORTHWIND_USERNAME }}
           NORTHWIND_DB_PASSWORD: ${{ secrets.NORTHWIND_PASSWORD }}
-          NORTHWIND_DB_HOST: ${{ secrets.NORTHWIND_HOST }}
-          NORTHWIND_DB_SCHEMA: ${{ secrets.NORTHWIND_DBT_SCHEMA }}
+          NORTHWIND_DB_HOST:     ${{ secrets.NORTHWIND_HOST }}
+          NORTHWIND_DB_SCHEMA:   ${{ secrets.NORTHWIND_DBT_SCHEMA }}
         run: |
           cd ./northwind
+          dbt debug --profiles-dir ..
           dbt deps --profiles-dir ..
           dbt snapshot --profiles-dir ..
           dbt run -f --profiles-dir ..
