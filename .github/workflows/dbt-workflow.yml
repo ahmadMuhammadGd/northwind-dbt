@@ -1,6 +1,8 @@
 name: 🔨 Building env dbt models 👾
 
-on: [push]
+on:
+  pull_request:
+    branches: [main]
 
 jobs:
   Test-Development-Initialization:
@@ -19,12 +21,21 @@ jobs:
         
       - name: 🛠️ Initialize Database and Run dbt
         run: sh github-actions-psql-init.sh
-
+     
+      - name: 📦 Set up profiles.yml variables
+        env:
+          NORTHWIND_DB_NAME: ${{ secrets.NORTHWIND_DB_NAME }}
+          NORTHWIND_DB_USER: ${{ secrets.NORTHWIND_USERNAME }}
+          NORTHWIND_DB_PASSWORD: ${{ secrets.NORTHWIND_PASSWORD }}
+          NORTHWIND_DB_HOST: ${{ secrets.NORTHWIND_HOST }}
+          NORTHWIND_DB_SCHEMA: ${{ secrets.NORTHWIND_DBT_SCHEMA }}
+          
       - name: 🚀 Run dbt Commands
         run: |
           cd ./northwind
+          dbt ddebug
           dbt deps
-          dbt snapshot --profiles-dir ..
-          dbt run --profiles-dir ..
-          dbt run --full-refresh --profiles-dir ..
-          dbt test --profiles-dir ..
+          dbt snapshot
+          dbt run -f
+          dbt run 
+          dbt test

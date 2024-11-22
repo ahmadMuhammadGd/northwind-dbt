@@ -53,7 +53,7 @@ models:
       inventory:
         +severity: error
         +docs:
-          node_color: "blue"
+          node_color: "black"
         +group: inventory
         +tags: "inventory"
         +schema: facts
@@ -66,14 +66,6 @@ models:
         +tags: "orders"
         +schema: facts
 
-      unit_tests:
-        +docs:
-          node_color: "black"
-        +tags: "unit_tests"
-
 tests:
   +store_failures: true
   +schema: _sad_test_failures
-  northwind:
-    # db_staging:
-    #   +severity: warn

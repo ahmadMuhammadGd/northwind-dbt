@@ -1,0 +1,63 @@
+version: 2
+
+models:
+  - name: stg_inventory
+    latest_version: 2
+    description: "Inventory data from the CDC products inventory"
+    columns:
+      - name: product_id
+        description: "Product ID in the inventory"
+        data_type: int
+
+      - name: product_name
+        description: "Name of the product"
+        data_type: varchar(40)
+      
+      - name: supplier_id
+        description: "ID of the product supplier"
+        data_type: int
+      
+      - name: category_id
+        description: "ID of the category to which the product belongs"
+        data_type: int
+      
+      - name: quantity_per_unit
+        description: "Quantity of the product per unit"
+        data_type: varchar(20)
+      
+      - name: units_in_stock
+        description: "Units of the product in stock"
+        data_type: int
+
+      - name: units_on_order
+        description: "Units of the product currently on order"
+        data_type: int
+
+      - name: reorder_level
+        data_type: int
+
+      - name : dbt_updated_at
+        data_type: timestamp
+
+      - name : dbt_valid_from
+        data_type: timestamp
+      
+      - name : dbt_valid_to
+        data_type: timestamp
+
+    versions:
+      - v: 1    
+      - v: 2
+        columns:
+          - include: all
+            exclude: [dbt_updated_at, dbt_valid_to, dbt_valid_from]
+          
+          - name: CDC_sk
+            data_type: text
+            constraints:
+              - type: primary_key
+          
+          - name: updated_at
+            data_type: timestamp
+            constraints:
+              - type: not_null

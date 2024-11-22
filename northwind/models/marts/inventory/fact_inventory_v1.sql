@@ -21,7 +21,7 @@ WITH new_inventory AS (
         cdc.dbt_scd_id,
         cdc.dbt_updated_at
     FROM
-        {{ ref('stg_inventory') }} cdc
+        {{ ref('stg_inventory', version=1) }} cdc
     
     {% if is_incremental() %}
     LEFT JOIN

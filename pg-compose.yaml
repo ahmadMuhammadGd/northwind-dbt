@@ -11,7 +11,10 @@ services:
     volumes:
       - ./db-init:/db-init
       - pgadmin-data:/var/lib/pgadmin
-
+    networks:
+      - local_development
 
 volumes:
   pgadmin-data:
+networks:
+  local_development:

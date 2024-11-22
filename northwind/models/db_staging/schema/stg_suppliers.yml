@@ -1,0 +1,41 @@
+version: 2
+
+models:
+  - name: stg_suppliers
+    description: "Suppliers data from Northwind dataset"
+    columns:
+      - name: supplier_id
+        data_type: int
+
+      - name: company_name
+        data_type: text
+
+      - name: contact_name
+        data_type: text
+
+      - name: contact_title
+        data_type: text
+
+      - name: address
+        data_type: text
+
+      - name: city
+        data_type: text
+
+      - name: region
+        data_type: text
+
+      - name: postal_code
+        data_type: text
+
+      - name: country
+        data_type: text
+
+      - name: phone
+        data_type: text
+
+      - name: fax
+        data_type: text
+
+      - name: homepage
+        data_type: text
