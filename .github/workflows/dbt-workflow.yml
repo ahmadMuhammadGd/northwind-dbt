@@ -25,9 +25,9 @@ jobs:
       - name: 📦 Set up profiles.yml
         env:
           NORTHWIND_DB_NAME: ${{ secrets.NORTHWIND_DB_NAME }}
-          NORTHWIND_DB_USER: ${{ secrets.NORTHWIND_USER }}
+          NORTHWIND_DB_USER: ${{ secrets.NORTHWIND_USERNAME }}
           NORTHWIND_DB_PASSWORD: ${{ secrets.NORTHWIND_PASSWORD }}
-          NORTHWIND_DB_HOST: ${{ secrets.NORTHWIND_DB_HOST }}
+          NORTHWIND_DB_HOST: ${{ secrets.NORTHWIND_HOST }}
           NORTHWIND_DB_SCHEMA: ${{ secrets.NORTHWIND_DBT_SCHEMA }}
         run: |
           mkdir -p ~/.dbt
@@ -39,7 +39,7 @@ jobs:
                 host: \"$NORTHWIND_DB_HOST\"
                 pass: \"$NORTHWIND_DB_PASSWORD\"
                 port: 5432
-                schema: \"$NORTHWIND_DB_SCHEMA\"
+                schema: \"$NORTHWIND_DBT_SCHEMA\"
                 type: postgres
                 user: \"$NORTHWIND_DB_USER\"
             target: dev
