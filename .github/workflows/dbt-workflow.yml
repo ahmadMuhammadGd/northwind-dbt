@@ -21,12 +21,35 @@ jobs:
         
       - name: 🛠️ Initialize Database and Run dbt
         run: sh github-actions-psql-init.sh
-
+     
+      - name: 📦 Set up profiles.yml
+        env:
+          NORTHWIND_DB_NAME: ${{ secrets.NORTHWIND_DB_NAME }}
+          NORTHWIND_DB_USER: ${{ secrets.NORTHWIND_USER }}
+          NORTHWIND_DB_PASSWORD: ${{ secrets.NORTHWIND_PASSWORD }}
+          NORTHWIND_DB_HOST: ${{ secrets.NORTHWIND_DB_HOST }}
+          NORTHWIND_DB_SCHEMA: ${{ secrets.NORTHWIND_DBT_SCHEMA }}
+        run: |
+          mkdir -p ~/.dbt
+          echo " 
+          northwind:
+            outputs:
+              dev:
+                dbname: \"$NORTHWIND_DB_NAME\"
+                host: \"$NORTHWIND_DB_HOST\"
+                pass: \"$NORTHWIND_DB_PASSWORD\"
+                port: 5432
+                schema: \"$NORTHWIND_DB_SCHEMA\"
+                type: postgres
+                user: \"$NORTHWIND_DB_USER\"
+            target: dev
+          " > ~/.dbt/profiles.yml
+          
       - name: 🚀 Run dbt Commands
         run: |
           cd ./northwind
           dbt deps
-          dbt snapshot --profiles-dir ..
-          dbt run --profiles-dir ..
-          dbt run --full-refresh --profiles-dir ..
-          dbt test --profiles-dir ..
+          dbt snapshot
+          dbt run -f
+          dbt run 
+          dbt test
