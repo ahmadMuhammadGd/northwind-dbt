@@ -1,12 +1,12 @@
 northwind:
   outputs:
     dev:
-      dbname: northwind
-      host: localhost
-      pass: passw0rd
+      dbname: {{ secrets.NORTHWIND_DB_NAME }}
+      host: {{ secrets.NORTHWIND_HOST }}
+      pass: {{ secrets.NORTHWIND_PASSWORD }}
       port: 5432
-      schema: dwh
+      schema: {{ secrets.NORTHWIND_DBT_SCHEMA }}
       threads: 3
       type: postgres
-      user: ahmad
+      user: {{ secrets.NORTHWIND_USERNAME }}
   target: dev
