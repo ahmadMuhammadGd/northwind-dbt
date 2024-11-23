@@ -1,12 +1,12 @@
 northwind:
   outputs:
     dev:
-      dbname: northwind
-      host: localhost
-      pass: passw0rd
-      port: 5432
-      schema: dwh
+      dbname: "{{ env_var('NORTHWIND_DB_NAME') }}"
+      user:   "{{ env_var('NORTHWIND_DB_USER') }}"
+      pass:   "{{ env_var('NORTHWIND_DB_PASSWORD') }}"
+      host:   "{{ env_var('NORTHWIND_DB_HOST') }}"
+      schema: "{{ env_var('NORTHWIND_DB_SCHEMA') }}"
+      type:   postgres
       threads: 3
-      type: postgres
-      user: ahmad
+      port: 5432
   target: dev
