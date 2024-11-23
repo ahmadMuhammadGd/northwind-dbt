@@ -160,10 +160,30 @@ Notice that `fact_inventory` has two versions. The first version uses source **s
 ![dbt dag](./readme_assets/dbt-dag.png)
 
 
+# 🏃 Run GitHub Workflow Offline Using act 🎬
 
+With the help of the act tool, you can run and test your GitHub workflows locally using Docker. This allows you to catch issues before pushing changes to the remote repository.
+
+To run a workflow locally and simulate a pull_request event, use the following command:
+
+```sh
+# Using act to run a GitHub workflow locally
+# Secrets are stored in the .secrets file (create it yourself with required values)
+act -P ubuntu-20.04=catthehacker/ubuntu:act-20.04 pull_request --secret-file .secrets --pull=false
+```
+- **act:** The CLI tool that simulates GitHub Actions workflows locally.
+
+- **-P:** ubuntu-20.04=catthehacker/ubuntu:act-20.04: Specifies the Docker image to use. We're using an Ubuntu 20.04 image provided by act.
+
+- **pull_request:** Specifies the event type that will trigger the workflow.
+
+- **--secret-file:** .secrets: Points to a file containing secret values for environment variables.
+
+- **--pull=false**: Prevents act from automatically pulling the latest image (useful if you want to avoid an unnecessary download).
 
 # 📚 Resources
 - [📑 dbt Unit Tests](https://docs.getdbt.com/docs/build/unit-tests)
 - [🔧 dbt Model Versioning](https://docs.getdbt.com/docs/collaborate/govern/model-versions)
 - [🔨 Test Driven Development (TDD) in Software Engineering](https://en.wikipedia.org/wiki/Test-driven_development)
 - [🤔 Unit Tests 🆚 Integrations Tests](https://stackoverflow.com/questions/5357601/whats-the-difference-between-unit-tests-and-integration-tests)
+- [🎬 act Documentation](https://nektosact.com/introduction.html)

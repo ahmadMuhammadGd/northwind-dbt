@@ -2,3 +2,6 @@ logs
 *-env
 scripts
 .user*
+test*.sh
+.secrets
+bin
