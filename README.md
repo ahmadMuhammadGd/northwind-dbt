@@ -164,6 +164,8 @@ Notice that `fact_inventory` has two versions. The first version uses source **s
 
 With the help of the act tool, you can run and test your GitHub workflows locally using Docker. This allows you to catch issues before pushing changes to the remote repository.
 
+> Check `.github/workflows`
+
 To run a workflow locally and simulate a pull_request event, use the following command:
 
 ```sh
@@ -173,7 +175,7 @@ act -P ubuntu-20.04=catthehacker/ubuntu:act-20.04 pull_request --secret-file .se
 ```
 - **act:** The CLI tool that simulates GitHub Actions workflows locally.
 
-- **-P:** ubuntu-20.04=catthehacker/ubuntu:act-20.04: Specifies the Docker image to use. We're using an Ubuntu 20.04 image provided by act.
+- **-P ubuntu-20.04=catthehacker/ubuntu:act-20.04:** Specifies the Docker image to use. We're using an Ubuntu 20.04 image provided by act.
 
 - **pull_request:** Specifies the event type that will trigger the workflow.
 
